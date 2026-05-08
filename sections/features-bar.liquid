@@ -1,0 +1,163 @@
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="koc-features section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  style="{%- render 'spacing-padding', settings: section.settings -%}"
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="koc-features__header">
+      <h2 class="koc-features__heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="koc-features__subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="koc-features__grid">
+    {%- for block in section.blocks -%}
+      <div class="koc-features__card" {{ block.shopify_attributes }}>
+        {%- if block.settings.icon != blank -%}
+          <div class="koc-features__icon-wrap" aria-hidden="true">
+            <span class="koc-features__icon">{{ block.settings.icon }}</span>
+          </div>
+        {%- endif -%}
+        {%- if block.settings.title != blank -%}
+          <h3 class="koc-features__title">{{ block.settings.title | escape }}</h3>
+        {%- endif -%}
+        {%- if block.settings.description != blank -%}
+          <p class="koc-features__desc">{{ block.settings.description | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+.koc-features__header {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.koc-features__heading {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.koc-features__subheading {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  max-width: 480px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+.koc-features__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media screen and (min-width: 600px) {
+  .koc-features__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (min-width: 900px) {
+  .koc-features__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.koc-features__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 36px 28px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.koc-features__card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.koc-features__icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5e8ca, #eed5a5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+
+.koc-features__icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.koc-features__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: inherit;
+}
+
+.koc-features__desc {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  opacity: 0.7;
+  max-width: 280px;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Features bar",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icon (emoji)", "default": "🏆" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Unbeatable Quality" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Premium paper, vibrant printing and lasting quality for every invitation." }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why King of Cards" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Trusted by 40,000+ happy couples across India" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-2" },
+    {
+      "type": "select", "id": "section_width", "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page width" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 64 }
+  ],
+  "presets": [
+    {
+      "name": "Features bar",
+      "category": "About",
+      "blocks": {
+        "feat_1": { "type": "feature", "settings": { "icon": "🏆", "title": "Unbeatable Quality", "description": "Premium paper, vibrant printing and lasting quality for every invitation." } },
+        "feat_2": { "type": "feature", "settings": { "icon": "🎨", "title": "500+ Exclusive Designs", "description": "Traditional to modern — unique designs blending culture with creativity." } },
+        "feat_3": { "type": "feature", "settings": { "icon": "✏️", "title": "Personalised Touch", "description": "Custom cards tailored perfectly to your names, date and special day." } }
+      },
+      "block_order": ["feat_1","feat_2","feat_3"]
+    }
+  ]
+}
+{% endschema %}

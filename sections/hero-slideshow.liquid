@@ -1,0 +1,970 @@
+
+<koc-hero-slideshow
+  class="koc-slideshow section--{{ section.settings.section_width }} spacing-style"
+  id="koc-slideshow-{{ section.id }}"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.autoplay_speed | times: 1000 }}"
+  style="
+    {%- render 'spacing-padding', settings: section.settings -%}
+    --slide-h: {{ section.settings.slide_height_desktop }}svh;
+    --slide-h-mob: {{ section.settings.slide_height_mobile }}svh;
+    --kb-dur: {{ section.settings.autoplay_speed }}s;
+    {% if section.settings.section_width == 'page-width' %}--slide-radius: {{ section.settings.corner_radius }}px;{% endif %}
+  "
+>
+
+  {%- comment -%} ──── SLIDES ──── {%- endcomment -%}
+  <div class="koc-slideshow__track">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        if forloop.first
+          assign img_load = 'eager'
+        else
+          assign img_load = 'lazy'
+        endif
+        assign has_mobile = false
+        if block.settings.image_mobile != blank
+          assign has_mobile = true
+        endif
+      -%}
+      <div
+        class="koc-slideshow__slide{% if forloop.first %} is-active{% endif %}{% if has_mobile %} has-mobile-img{% endif %}"
+        data-index="{{ forloop.index0 }}"
+        {{ block.shopify_attributes }}
+      >
+
+        {%- comment -%} Media {%- endcomment -%}
+        <div class="koc-slideshow__media">
+          {%- if block.settings.image != blank -%}
+            {{
+              block.settings.image
+              | image_url: width: 2000
+              | image_tag:
+                loading: img_load,
+                class: 'koc-slideshow__img koc-slideshow__img--desktop',
+                widths: '600, 900, 1200, 1600, 2000',
+                sizes: '100vw',
+                alt: block.settings.heading
+            }}
+          {%- else -%}
+            {{ 'hero-apparel-1' | placeholder_svg_tag: 'koc-slideshow__img koc-placeholder' }}
+          {%- endif -%}
+
+          {%- if has_mobile -%}
+            {{
+              block.settings.image_mobile
+              | image_url: width: 900
+              | image_tag:
+                loading: img_load,
+                class: 'koc-slideshow__img koc-slideshow__img--mobile',
+                widths: '400, 600, 800, 900',
+                sizes: '100vw',
+                alt: block.settings.heading
+            }}
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Overlay {%- endcomment -%}
+        <div
+          class="koc-slideshow__overlay"
+          style="
+            --ov-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+            --ov-dir: {{ block.settings.overlay_direction }};
+          "
+        ></div>
+
+        {%- comment -%} Content {%- endcomment -%}
+        <div class="koc-slideshow__content koc-h-{{ block.settings.content_align }} koc-v-{{ block.settings.content_valign }}">
+          <div class="koc-slideshow__inner">
+
+            {%- if block.settings.eyebrow != blank -%}
+              <p class="koc-slideshow__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.heading != blank -%}
+              <h2
+                class="koc-slideshow__heading"
+                style="color: {{ block.settings.heading_color }};"
+              >{{ block.settings.heading }}</h2>
+            {%- endif -%}
+
+            {%- if block.settings.subtext != blank -%}
+              <p
+                class="koc-slideshow__subtext"
+                style="color: {{ block.settings.subtext_color }};"
+              >{{ block.settings.subtext | escape }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.btn1_label != blank -%}
+              <div class="koc-slideshow__btns">
+                <a
+                  href="{{ block.settings.btn1_link | default: '#' }}"
+                  class="koc-btn koc-btn--{{ block.settings.btn1_style }}"
+                >{{ block.settings.btn1_label | escape }}</a>
+
+                {%- if block.settings.btn2_label != blank -%}
+                  <a
+                    href="{{ block.settings.btn2_link | default: '#' }}"
+                    class="koc-btn koc-btn--{{ block.settings.btn2_style }}"
+                  >{{ block.settings.btn2_label | escape }}</a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+          </div>
+        </div>
+
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+
+    {%- if section.settings.show_arrows -%}
+      <button class="koc-slideshow__arrow koc-slideshow__arrow--prev" type="button" aria-label="{{ 'accessibility.previous_slide' | t | default: 'Previous slide' }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="koc-slideshow__arrow koc-slideshow__arrow--next" type="button" aria-label="{{ 'accessibility.next_slide' | t | default: 'Next slide' }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_dots -%}
+      <div class="koc-slideshow__dots" role="tablist" aria-label="{{ 'accessibility.slideshow' | t | default: 'Slideshow' }}">
+        {%- for block in section.blocks -%}
+          <button
+            class="koc-slideshow__dot{% if forloop.first %} is-active{% endif %}"
+            data-index="{{ forloop.index0 }}"
+            role="tab"
+            aria-selected="{{ forloop.first }}"
+            aria-label="Slide {{ forloop.index }}"
+            type="button"
+          ></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.autoplay and section.settings.show_progress -%}
+      <div class="koc-slideshow__progress-wrap" aria-hidden="true">
+        <div class="koc-slideshow__progress-bar"></div>
+      </div>
+    {%- endif -%}
+
+  {%- endif -%}
+
+</koc-hero-slideshow>
+
+{% stylesheet %}
+/* =========================================
+   KOC Hero Slideshow
+   ========================================= */
+
+koc-hero-slideshow {
+  display: block;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: var(--slide-h-mob, 55svh);
+  background: #f5f0eb;
+  border-radius: var(--slide-radius, 0px);
+}
+
+@media screen and (min-width: 750px) {
+  koc-hero-slideshow {
+    height: var(--slide-h, 70svh);
+  }
+}
+
+/* Page-width inset */
+koc-hero-slideshow.section--page-width {
+  max-width: var(--page-width, 1200px);
+  margin-inline: auto;
+}
+
+/* ── Track ── */
+.koc-slideshow__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Slide ── */
+.koc-slideshow__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.koc-slideshow__slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.koc-slideshow__slide.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Media ── */
+.koc-slideshow__media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.koc-slideshow__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  will-change: transform;
+}
+
+.koc-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ken Burns: zoom in on active, zoom out on leaving */
+.koc-slideshow__slide.is-active .koc-slideshow__img {
+  animation: kocKenBurns var(--kb-dur, 5s) ease-out forwards;
+}
+
+@keyframes kocKenBurns {
+  0%   { transform: scale(1)    translate(0, 0); }
+  100% { transform: scale(1.07) translate(-1%, -0.5%); }
+}
+
+/* Mobile / desktop image switching */
+.koc-slideshow__img--mobile { display: none; }
+
+@media screen and (max-width: 749px) {
+  .has-mobile-img .koc-slideshow__img--desktop { display: none; }
+  .has-mobile-img .koc-slideshow__img--mobile  { display: block; }
+}
+
+/* ── Overlay ── */
+.koc-slideshow__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--ov-dir, to bottom),
+    transparent 20%,
+    rgba(0, 0, 0, var(--ov-opacity, 0.35)) 100%
+  );
+}
+
+/* ── Content wrapper ── */
+.koc-slideshow__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 2;
+  padding: 20px 24px;
+}
+
+@media screen and (min-width: 750px) {
+  .koc-slideshow__content {
+    padding: 48px 64px;
+  }
+}
+
+/* Horizontal alignment */
+.koc-slideshow__content.koc-h-left   { justify-content: flex-start; }
+.koc-slideshow__content.koc-h-center { justify-content: center; text-align: center; }
+.koc-slideshow__content.koc-h-right  { justify-content: flex-end; text-align: right; }
+
+/* Vertical alignment */
+.koc-slideshow__content.koc-v-top    { align-items: flex-start; }
+.koc-slideshow__content.koc-v-center { align-items: center; }
+.koc-slideshow__content.koc-v-bottom { align-items: flex-end; }
+
+/* ── Content inner (animated on slide change) ── */
+.koc-slideshow__inner {
+  max-width: 640px;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s ease 0.35s, transform 0.65s ease 0.35s;
+}
+
+.koc-slideshow__slide.is-active .koc-slideshow__inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Eyebrow label ── */
+.koc-slideshow__eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 100px;
+}
+
+/* ── Heading ── */
+.koc-slideshow__heading {
+  font-size: clamp(1.5rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.12;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Subtext ── */
+.koc-slideshow__subtext {
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.65;
+  margin-bottom: 24px;
+  max-width: 500px;
+}
+
+.koc-h-center .koc-slideshow__subtext { margin-inline: auto; }
+.koc-h-right  .koc-slideshow__subtext { margin-inline-start: auto; }
+
+/* ── Buttons ── */
+.koc-slideshow__btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.koc-h-center .koc-slideshow__btns { justify-content: center; }
+.koc-h-right  .koc-slideshow__btns { justify-content: flex-end; }
+
+.koc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 26px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.18s ease;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.koc-btn:hover { transform: translateY(-1px); }
+
+.koc-btn--primary {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 2px solid #ffffff;
+}
+.koc-btn--primary:hover {
+  background: transparent;
+  color: #ffffff;
+}
+
+.koc-btn--secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+}
+.koc-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+}
+
+.koc-btn--gold {
+  background: #c9a050;
+  color: #ffffff;
+  border: 2px solid #c9a050;
+}
+.koc-btn--gold:hover {
+  background: #a87e30;
+  border-color: #a87e30;
+}
+
+/* ── Arrows ── */
+.koc-slideshow__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.88);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #222222;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.koc-slideshow__arrow:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.koc-slideshow__arrow:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.koc-slideshow__arrow--prev { left: 14px; }
+.koc-slideshow__arrow--next { right: 14px; }
+
+@media screen and (min-width: 750px) {
+  .koc-slideshow__arrow       { width: 50px; height: 50px; }
+  .koc-slideshow__arrow--prev { left: 20px; }
+  .koc-slideshow__arrow--next { right: 20px; }
+}
+
+/* ── Dots ── */
+.koc-slideshow__dots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.koc-slideshow__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.45);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.koc-slideshow__dot.is-active {
+  background: #ffffff;
+  width: 24px;
+}
+
+.koc-slideshow__dot:hover:not(.is-active) {
+  background: rgba(255, 255, 255, 0.75);
+  transform: scale(1.2);
+}
+
+.koc-slideshow__dot:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* ── Progress bar ── */
+.koc-slideshow__progress-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 10;
+}
+
+.koc-slideshow__progress-bar {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.75);
+  width: 0%;
+  animation: kocProgress var(--kb-dur, 5s) linear forwards;
+}
+
+@keyframes kocProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .koc-slideshow__slide,
+  .koc-slideshow__inner,
+  .koc-slideshow__img { transition: none; animation: none; }
+}
+{% endstylesheet %}
+
+{% javascript %}
+class KocHeroSlideshow extends HTMLElement {
+  connectedCallback() {
+    this.slides   = Array.from(this.querySelectorAll('.koc-slideshow__slide'));
+    this.dots     = Array.from(this.querySelectorAll('.koc-slideshow__dot'));
+    this.prevBtn  = this.querySelector('.koc-slideshow__arrow--prev');
+    this.nextBtn  = this.querySelector('.koc-slideshow__arrow--next');
+    this.progressBar = this.querySelector('.koc-slideshow__progress-bar');
+
+    this.current  = 0;
+    this.count    = this.slides.length;
+    this.autoplay = this.dataset.autoplay === 'true';
+    this.speed    = parseInt(this.dataset.speed, 10) || 5000;
+    this._timer   = null;
+    this._startX  = 0;
+    this._busy    = false;
+
+    if (this.count < 2) return;
+
+    this._bind();
+    if (this.autoplay) this._play();
+  }
+
+  _go(idx) {
+    if (this._busy || idx === this.current) return;
+    this._busy = true;
+
+    const from = this.slides[this.current];
+    const to   = this.slides[idx];
+
+    from.classList.remove('is-active');
+    from.classList.add('is-leaving');
+    to.classList.add('is-active');
+
+    // Update dots
+    if (this.dots[this.current]) {
+      this.dots[this.current].classList.remove('is-active');
+      this.dots[this.current].setAttribute('aria-selected', 'false');
+    }
+    if (this.dots[idx]) {
+      this.dots[idx].classList.add('is-active');
+      this.dots[idx].setAttribute('aria-selected', 'true');
+    }
+
+    // Restart progress bar
+    if (this.progressBar) {
+      this.progressBar.style.animation = 'none';
+      void this.progressBar.offsetWidth; // force reflow
+      this.progressBar.style.animation = '';
+    }
+
+    this.current = idx;
+
+    // Clear leaving class after transition
+    const transitionDuration = 900;
+    setTimeout(() => {
+      from.classList.remove('is-leaving');
+      this._busy = false;
+    }, transitionDuration);
+
+    clearTimeout(this._timer);
+    if (this.autoplay) this._play();
+  }
+
+  _next() { this._go((this.current + 1) % this.count); }
+  _prev() { this._go((this.current - 1 + this.count) % this.count); }
+
+  _play() {
+    this._timer = setTimeout(() => this._next(), this.speed);
+  }
+
+  _bind() {
+    if (this.prevBtn) this.prevBtn.addEventListener('click', () => this._prev());
+    if (this.nextBtn) this.nextBtn.addEventListener('click', () => this._next());
+
+    this.dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => this._go(i));
+    });
+
+    // Touch / swipe support
+    this.addEventListener('touchstart', (e) => {
+      this._startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    this.addEventListener('touchend', (e) => {
+      const dx = this._startX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 48) dx > 0 ? this._next() : this._prev();
+    }, { passive: true });
+
+    // Keyboard navigation
+    this.setAttribute('tabindex', '0');
+    this.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); this._prev(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); this._next(); }
+    });
+
+    // Pause on hover / focus (accessibility)
+    if (this.autoplay) {
+      this.addEventListener('mouseenter', () => clearTimeout(this._timer));
+      this.addEventListener('mouseleave', () => this._play());
+      this.addEventListener('focusin',    () => clearTimeout(this._timer));
+      this.addEventListener('focusout',   () => this._play());
+    }
+  }
+
+  disconnectedCallback() {
+    clearTimeout(this._timer);
+  }
+}
+
+if (!customElements.get('koc-hero-slideshow')) {
+  customElements.define('koc-hero-slideshow', KocHeroSlideshow);
+}
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Hero slideshow",
+  "class": "koc-hero-slideshow-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Mobile image",
+          "info": "Optional. Shown only on mobile screens."
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow label",
+          "placeholder": "NEW ARRIVALS",
+          "info": "Small label shown above the heading."
+        },
+        {
+          "type": "textarea",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Beautiful Wedding Invitations"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "textarea",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "Handcrafted invitation cards for your special day"
+        },
+        {
+          "type": "color",
+          "id": "subtext_color",
+          "label": "Subtext color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "header",
+          "content": "Primary button"
+        },
+        {
+          "type": "text",
+          "id": "btn1_label",
+          "label": "Button label",
+          "default": "Explore Collection"
+        },
+        {
+          "type": "url",
+          "id": "btn1_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "btn1_style",
+          "label": "Button style",
+          "options": [
+            { "value": "primary",   "label": "Filled white" },
+            { "value": "secondary", "label": "Outline white" },
+            { "value": "gold",      "label": "Gold" }
+          ],
+          "default": "primary"
+        },
+        {
+          "type": "header",
+          "content": "Secondary button (optional)"
+        },
+        {
+          "type": "text",
+          "id": "btn2_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "btn2_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "btn2_style",
+          "label": "Button style",
+          "options": [
+            { "value": "primary",   "label": "Filled white" },
+            { "value": "secondary", "label": "Outline white" },
+            { "value": "gold",      "label": "Gold" }
+          ],
+          "default": "secondary"
+        },
+        {
+          "type": "header",
+          "content": "Content position"
+        },
+        {
+          "type": "select",
+          "id": "content_align",
+          "label": "Horizontal alignment",
+          "options": [
+            { "value": "left",   "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right",  "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "content_valign",
+          "label": "Vertical alignment",
+          "options": [
+            { "value": "top",    "label": "Top" },
+            { "value": "center", "label": "Center" },
+            { "value": "bottom", "label": "Bottom" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "header",
+          "content": "Overlay"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Overlay darkness",
+          "min": 0,
+          "max": 80,
+          "step": 5,
+          "unit": "%",
+          "default": 35,
+          "info": "Darkens the image to make text more readable."
+        },
+        {
+          "type": "select",
+          "id": "overlay_direction",
+          "label": "Overlay gradient direction",
+          "options": [
+            { "value": "to bottom",  "label": "Top to bottom" },
+            { "value": "to top",     "label": "Bottom to top" },
+            { "value": "to right",   "label": "Left to right" },
+            { "value": "180deg",     "label": "Solid (no gradient)" }
+          ],
+          "default": "to bottom"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        { "value": "full-width",  "label": "Full width" },
+        { "value": "page-width",  "label": "Page width (inset)" }
+      ],
+      "default": "full-width"
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ section.settings.section_width == 'page-width' }}"
+    },
+    {
+      "type": "header",
+      "content": "Slide height"
+    },
+    {
+      "type": "range",
+      "id": "slide_height_desktop",
+      "label": "Height on desktop",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "svh",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "slide_height_mobile",
+      "label": "Height on mobile",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "svh",
+      "default": 55
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Slide duration",
+      "min": 3,
+      "max": 9,
+      "step": 1,
+      "unit": "s",
+      "default": 5,
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "header",
+      "content": "Navigation controls"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show arrow buttons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show dot indicators",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress",
+      "label": "Show progress bar",
+      "default": true,
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero slideshow",
+      "category": "Banners",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "heading": "Beautiful Wedding Invitations",
+            "subtext": "Handcrafted cards for your special day. Explore 500+ designs.",
+            "btn1_label": "Explore Collection",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "primary",
+            "content_align": "left",
+            "content_valign": "center",
+            "overlay_opacity": 35,
+            "overlay_direction": "to bottom"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "NEW ARRIVALS",
+            "heading": "Premium Laser-Cut Designs",
+            "subtext": "Stunning acrylic, padded and tracing sheet invitations.",
+            "btn1_label": "Shop Premium",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "gold",
+            "btn2_label": "View All Cards",
+            "btn2_link": "shopify://collections/all",
+            "btn2_style": "secondary",
+            "content_align": "center",
+            "content_valign": "center",
+            "overlay_opacity": 40,
+            "overlay_direction": "180deg"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "SALE",
+            "heading": "Up to 50% Off This Week",
+            "subtext": "Limited time deals on our most popular invitation styles.",
+            "btn1_label": "Shop Sale",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "primary",
+            "content_align": "left",
+            "content_valign": "bottom",
+            "overlay_opacity": 30,
+            "overlay_direction": "to top"
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2", "slide_3"]
+    }
+  ]
+}
+{% endschema %}

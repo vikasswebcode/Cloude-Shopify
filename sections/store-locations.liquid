@@ -1,0 +1,216 @@
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div
+  class="koc-stores section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  style="{%- render 'spacing-padding', settings: section.settings -%}"
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="koc-stores__header">
+      <h2 class="koc-stores__heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="koc-stores__subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="koc-stores__track">
+    <div class="koc-stores__grid">
+      {%- for block in section.blocks -%}
+        {%- assign href = block.settings.link | default: '#' -%}
+        <a
+          class="koc-stores__card"
+          href="{{ href }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="koc-stores__img-wrap">
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 600
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'koc-stores__img',
+                  widths: '300, 400, 600',
+                  sizes: '(max-width:749px) 70vw, 200px',
+                  alt: block.settings.city
+              }}
+            {%- else -%}
+              {{ 'collection-apparel-1' | placeholder_svg_tag: 'koc-stores__img koc-stores__placeholder' }}
+            {%- endif -%}
+            <div class="koc-stores__overlay"></div>
+          </div>
+          <div class="koc-stores__info">
+            <p class="koc-stores__city">{{ block.settings.city | escape }}</p>
+            {%- if block.settings.stores_text != blank -%}
+              <p class="koc-stores__count">{{ block.settings.stores_text | escape }}</p>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.koc-stores__header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.koc-stores__heading {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.koc-stores__subheading {
+  font-size: 0.9rem;
+  opacity: 0.65;
+}
+
+/* Horizontal scroll on mobile, grid on desktop */
+.koc-stores__track {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.koc-stores__track::-webkit-scrollbar { display: none; }
+
+.koc-stores__grid {
+  display: flex;
+  gap: 14px;
+  min-width: max-content;
+  padding-bottom: 4px;
+}
+
+@media screen and (min-width: 750px) {
+  .koc-stores__track { overflow: visible; }
+  .koc-stores__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    min-width: 0;
+    gap: 16px;
+  }
+}
+
+/* Card */
+.koc-stores__card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  width: 150px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+@media screen and (min-width: 750px) {
+  .koc-stores__card { width: auto; }
+}
+
+.koc-stores__card:hover {
+  transform: translateY(-4px);
+}
+
+.koc-stores__img-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f0ebe3;
+}
+
+.koc-stores__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.koc-stores__card:hover .koc-stores__img {
+  transform: scale(1.06);
+}
+
+.koc-stores__placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.koc-stores__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.koc-stores__info {
+  padding: 10px 4px 4px;
+  text-align: center;
+}
+
+.koc-stores__city {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+  color: inherit;
+}
+
+.koc-stores__count {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  font-weight: 500;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Store locations",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "max_blocks": 10,
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Store photo" },
+        { "type": "text", "id": "city", "label": "City name", "default": "City Name" },
+        { "type": "text", "id": "stores_text", "label": "Store count text", "default": "1 Store", "info": "e.g. 6 Stores" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Our Stores" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Visit us at a store near you" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    {
+      "type": "select", "id": "section_width", "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page width" },
+        { "value": "full-width", "label": "Full width" }
+      ],
+      "default": "page-width"
+    },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 56 }
+  ],
+  "presets": [
+    {
+      "name": "Store locations",
+      "category": "About",
+      "blocks": {
+        "store_1": { "type": "store", "settings": { "city": "Bengaluru", "stores_text": "6 Stores" } },
+        "store_2": { "type": "store", "settings": { "city": "Hyderabad", "stores_text": "1 Store" } },
+        "store_3": { "type": "store", "settings": { "city": "Mysore", "stores_text": "1 Store" } },
+        "store_4": { "type": "store", "settings": { "city": "Visakhapatnam", "stores_text": "1 Store" } },
+        "store_5": { "type": "store", "settings": { "city": "Hubballi", "stores_text": "1 Store" } }
+      },
+      "block_order": ["store_1","store_2","store_3","store_4","store_5"]
+    }
+  ]
+}
+{% endschema %}

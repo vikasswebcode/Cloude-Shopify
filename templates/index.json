@@ -8,283 +8,452 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
+    "marquee_announce": {
+      "type": "marquee",
       "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
+        "text_a1": { "type": "text", "settings": { "text": "<p>✨ 40,000+ Happy Customers</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.875rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_a2": { "type": "text", "settings": { "text": "<p>◆</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.5rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_a3": { "type": "text", "settings": { "text": "<p>🚚 Free Delivery on Orders Above ₹999</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.875rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_a4": { "type": "text", "settings": { "text": "<p>◆</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.5rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_a5": { "type": "text", "settings": { "text": "<p>⭐ 5-Star Rated Wedding Invitations</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.875rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_a6": { "type": "text", "settings": { "text": "<p>◆</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.5rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_a7": { "type": "text", "settings": { "text": "<p>🏪 10 Stores across 5 Cities</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.875rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_a8": { "type": "text", "settings": { "text": "<p>◆</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.5rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_a9": { "type": "text", "settings": { "text": "<p>💌 Custom Invitations Available</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.875rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } }
+      },
+      "block_order": ["text_a1","text_a2","text_a3","text_a4","text_a5","text_a6","text_a7","text_a8","text_a9"],
+      "name": "Announcement Bar",
+      "settings": { "movement_direction": "normal", "color_scheme": "scheme-2", "padding-block-start": 10, "padding-block-end": 10, "gap_between_elements": 20 }
+    },
+
+    "hero_jVaWmY": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "var(--color-foreground-heading)",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "heading": "Beautiful Wedding Invitations",
+            "subtext": "Handcrafted cards for your special day. Explore 500+ designs.",
+            "btn1_label": "Explore Collection",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "primary",
+            "content_align": "left",
+            "content_valign": "center",
+            "overlay_opacity": 35,
+            "overlay_direction": "to bottom"
+          }
         },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
+        "slide_2": {
+          "type": "slide",
           "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-secondary",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
+            "eyebrow": "NEW ARRIVALS",
+            "heading": "Premium Laser-Cut Designs",
+            "subtext": "Stunning acrylic, padded and tracing sheet invitations.",
+            "btn1_label": "Shop Premium",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "gold",
+            "btn2_label": "View All Cards",
+            "btn2_link": "shopify://collections/all",
+            "btn2_style": "secondary",
+            "content_align": "center",
+            "content_valign": "center",
+            "overlay_opacity": 40,
+            "overlay_direction": "180deg"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "SALE",
+            "heading": "Up to 50% Off This Week",
+            "subtext": "Limited time deals on our most popular invitation styles.",
+            "btn1_label": "Shop Sale",
+            "btn1_link": "shopify://collections/all",
+            "btn1_style": "primary",
+            "content_align": "left",
+            "content_valign": "bottom",
+            "overlay_opacity": 30,
+            "overlay_direction": "to top"
+          }
         }
       },
-      "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
-      "name": "t:names.hero",
+      "block_order": ["slide_1","slide_2","slide_3"],
+      "name": "Hero slideshow",
       "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
-        "media_type_1_mobile": "image",
-        "media_type_2_mobile": "image",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "color_scheme": "scheme-6",
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
+        "section_width": "full-width",
+        "corner_radius": 0,
+        "slide_height_desktop": 70,
+        "slide_height_mobile": 55,
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "show_arrows": true,
+        "show_dots": true,
+        "show_progress": true,
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
-    "product_list_fa6P9H": {
-      "type": "product-list",
+
+    "collection_list_categories": {
+      "type": "collection-list",
       "blocks": {
-        "static-header": {
-          "type": "_product-list-content",
-          "name": "t:names.header",
-          "static": true,
+        "group_hdr_cat": {
+          "type": "group",
+          "name": "Header",
           "settings": {
-            "content_direction": "row",
-            "vertical_on_mobile": false,
-            "horizontal_alignment": "space-between",
-            "vertical_alignment": "flex-end",
+            "content_direction": "row", "vertical_on_mobile": false,
+            "horizontal_alignment": "space-between", "vertical_alignment": "flex-end",
             "align_baseline": true,
             "horizontal_alignment_flex_direction_column": "flex-start",
             "vertical_alignment_flex_direction_column": "center",
-            "gap": 12,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill",
+            "custom_width_mobile": 100, "height": "fit", "custom_height": 100,
+            "inherit_color_scheme": true, "color_scheme": "", "background_media": "none",
+            "video_position": "cover", "background_image_position": "cover",
+            "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0,
+            "padding-block-start": 0, "padding-block-end": 20,
+            "padding-inline-start": 0, "padding-inline-end": 0
           },
           "blocks": {
-            "product_list_text_YFtzcL": {
-              "type": "_product-list-text",
-              "name": "t:names.collection_title",
-              "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_list_button_MWeP9V": {
-              "type": "_product-list-button",
-              "name": "t:names.product_list_button",
-              "settings": {
-                "label": "View all",
-                "open_in_new_tab": false,
-                "style_class": "link",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            }
+            "title_cat": { "type": "text", "name": "Heading", "settings": { "text": "<h2>Shop by Category</h2>", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "width": "fit-content", "max_width": "normal", "alignment": "left", "color": "var(--color-foreground-heading)" } },
+            "btn_cat": { "type": "button", "name": "View all", "settings": { "label": "View all", "link": "shopify://collections/all", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
           },
-          "block_order": [
-            "product_list_text_YFtzcL",
-            "product_list_button_MWeP9V"
-          ]
+          "block_order": ["title_cat","btn_cat"]
         },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 4,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
+        "static-collection-card": {
+          "type": "_collection-card", "name": "Collection card", "static": true,
+          "settings": { "placement": "on_image", "horizontal_alignment": "flex-start", "vertical_alignment": "flex-end", "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8 },
           "blocks": {
-            "product_card_gallery_677WP3": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_YXxMTj": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_JQzVV4": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
+            "collection-card-image": { "type": "_collection-card-image", "name": "Image", "static": true, "settings": { "image_ratio": "square" } },
+            "collection-title": { "type": "collection-title", "name": "Title", "settings": { "type_preset": "h6", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "width": "fill", "max_width": "normal", "alignment": "center", "background": true, "background_color": "#00000066", "padding-block-start": 8, "padding-block-end": 8, "padding-inline-start": 12, "padding-inline-end": 12 } }
           },
-          "block_order": [
-            "product_card_gallery_677WP3",
-            "product_title_YXxMTj",
-            "price_JQzVV4"
-          ]
+          "block_order": ["collection-title"]
         }
       },
-      "name": "Featured collection",
+      "block_order": ["group_hdr_cat"],
+      "name": "Shop by Category",
+      "settings": { "layout_type": "grid", "carousel_on_mobile": true, "columns": 4, "mobile_columns": "2", "mobile_card_size": "44cqw", "columns_gap": 12, "rows_gap": 12, "icons_style": "arrow", "icons_shape": "circle", "section_width": "page-width", "gap": 24, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "product_list_deals": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "deals_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Deal of the Week</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "deals_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["deals_title","deals_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_deals": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_deals": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_deals": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_deals","title_deals","price_deals"]
+        }
+      },
+      "name": "Deal of the Week",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": false, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "none", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "product_list_trendy": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "trendy_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Trendy Exclusive Invitations</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "trendy_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["trendy_title","trendy_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_trendy": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_trendy": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_trendy": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_trendy","title_trendy","price_trendy"]
+        }
+      },
+      "name": "Trendy Exclusive Invitations",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": true, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "circle", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "stats_bar": {
+      "type": "stats-bar",
+      "blocks": {
+        "stat_1": { "type": "stat", "settings": { "icon": "✨", "number": "40,000+", "label": "Happy Customers" } },
+        "stat_2": { "type": "stat", "settings": { "icon": "📸", "number": "350K+", "label": "Instagram Family" } },
+        "stat_3": { "type": "stat", "settings": { "icon": "🏪", "number": "10+", "label": "Stores" } },
+        "stat_4": { "type": "stat", "settings": { "icon": "🌆", "number": "5", "label": "Cities" } }
+      },
+      "block_order": ["stat_1","stat_2","stat_3","stat_4"],
+      "name": "Milestones",
+      "settings": { "color_scheme": "scheme-1", "section_width": "full-width", "accent_color": "#b8751b", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "store_locations": {
+      "type": "store-locations",
+      "blocks": {
+        "store_1": { "type": "store", "settings": { "city": "Bengaluru", "stores_text": "6 Stores", "link": "/pages/stores" } },
+        "store_2": { "type": "store", "settings": { "city": "Hyderabad", "stores_text": "1 Store", "link": "/pages/stores" } },
+        "store_3": { "type": "store", "settings": { "city": "Mysore", "stores_text": "1 Store", "link": "/pages/stores" } },
+        "store_4": { "type": "store", "settings": { "city": "Visakhapatnam", "stores_text": "1 Store", "link": "/pages/stores" } },
+        "store_5": { "type": "store", "settings": { "city": "Hubballi", "stores_text": "1 Store", "link": "/pages/stores" } }
+      },
+      "block_order": ["store_1","store_2","store_3","store_4","store_5"],
+      "name": "Our Stores",
+      "settings": { "heading": "Our Stores", "subheading": "Visit us at a store near you", "color_scheme": "scheme-1", "section_width": "page-width", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "product_list_premium": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "premium_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Premium Invitations</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "premium_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["premium_title","premium_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_premium": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_premium": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_premium": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_premium","title_premium","price_premium"]
+        }
+      },
+      "name": "Premium Invitations",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": false, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "none", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "custom_price_range": {
+      "type": "custom-liquid",
+      "name": "Shop by Budget",
       "settings": {
-        "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
-        "mobile_columns": "2",
-        "mobile_card_size": "60cqw",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
+        "custom_liquid": "<style>.koc-pr{max-width:960px;margin:0 auto}.koc-pr-h{text-align:center;font-size:1.5rem;font-weight:700;margin-bottom:8px}.koc-pr-s{text-align:center;color:#888;font-size:0.85rem;margin-bottom:24px}.koc-pr-g{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}@media(max-width:640px){.koc-pr-g{grid-template-columns:repeat(3,1fr)}}.koc-pr-c{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fdf8f0;border:2px solid #eed5a5;border-radius:12px;padding:18px 8px;text-decoration:none;color:#6b4226;font-weight:600;font-size:0.8rem;text-align:center;transition:all 0.2s}.koc-pr-c:hover{background:#f5e8ca;border-color:#c9a050}.koc-amt{font-size:1.1rem;font-weight:800;color:#b8751b;display:block;margin-bottom:4px}</style><div class='koc-pr'><h2 class='koc-pr-h'>Shop by Budget</h2><p class='koc-pr-s'>Find the perfect invitation for every budget</p><div class='koc-pr-g'><a href='/collections/all' class='koc-pr-c'><span class='koc-amt'>Under ₹5</span>Budget Cards</a><a href='/collections/all' class='koc-pr-c'><span class='koc-amt'>₹5 – ₹20</span>Value Picks</a><a href='/collections/all' class='koc-pr-c'><span class='koc-amt'>₹20 – ₹50</span>Popular</a><a href='/collections/all' class='koc-pr-c'><span class='koc-amt'>₹50 – ₹100</span>Premium</a><a href='/collections/all' class='koc-pr-c'><span class='koc-amt'>₹100+</span>Luxury</a></div></div>",
+        "color_scheme": "scheme-2",
         "section_width": "page-width",
-        "horizontal_alignment": "flex-start",
-        "gap": 28,
+        "padding-block-start": 56,
+        "padding-block-end": 56
+      }
+    },
+
+    "product_list_sale": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "sale_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Sale Collection</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "sale_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all deals", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["sale_title","sale_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_sale": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_sale": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_sale": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_sale","title_sale","price_sale"]
+        }
+      },
+      "name": "Sale Collection",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": false, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "none", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "product_list_new": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "new_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>New Arrivals</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "new_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["new_title","new_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_new": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_new": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_new": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_new","title_new","price_new"]
+        }
+      },
+      "name": "New Arrivals",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": true, "max_products": 8, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "circle", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "catalogue_section": {
+      "type": "catalogue-grid",
+      "blocks": {
+        "cat_1": { "type": "catalogue", "settings": { "title": "Affordable Cards", "subtitle": "MRP below ₹28", "btn_label": "Download PDF", "link": "#" } },
+        "cat_2": { "type": "catalogue", "settings": { "title": "Mid-Range Cards", "subtitle": "₹29 to ₹206", "btn_label": "Download PDF", "link": "#" } },
+        "cat_3": { "type": "catalogue", "settings": { "title": "Premium Cards", "subtitle": "₹48 to ₹2,250", "btn_label": "Download PDF", "link": "#" } },
+        "cat_4": { "type": "catalogue", "settings": { "title": "Stock Clearance", "subtitle": "₹5 to ₹177", "btn_label": "Download PDF", "link": "#" } }
+      },
+      "block_order": ["cat_1","cat_2","cat_3","cat_4"],
+      "name": "Download Catalogue",
+      "settings": { "heading": "Download Our Catalogue", "subheading": "Browse our full range by category and price", "color_scheme": "scheme-2", "section_width": "page-width", "padding-block-start": 64, "padding-block-end": 64 }
+    },
+
+    "product_list_luxe": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "luxe_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Luxe Invitation Boxes</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "luxe_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all luxe", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["luxe_title","luxe_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_luxe": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_luxe": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_luxe": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_luxe","title_luxe","price_luxe"]
+        }
+      },
+      "name": "Luxe Invitation Boxes",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": true, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "circle", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "product_list_hampers": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content", "name": "Header", "static": true,
+          "settings": { "content_direction": "row", "vertical_on_mobile": false, "horizontal_alignment": "space-between", "vertical_alignment": "flex-end", "align_baseline": true, "horizontal_alignment_flex_direction_column": "flex-start", "vertical_alignment_flex_direction_column": "center", "gap": 12, "width": "fill", "custom_width": 100, "width_mobile": "fill", "custom_width_mobile": 100, "height": "fit", "custom_height": 100, "inherit_color_scheme": true, "color_scheme": "", "background_media": "none", "video_position": "cover", "background_image_position": "cover", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "hampers_title": { "type": "_product-list-text", "name": "Heading", "settings": { "text": "<h2>Return Gift Hampers</h2>", "width": "fit-content", "max_width": "normal", "alignment": "left", "type_preset": "h3", "font": "var(--font-body--family)", "font_size": "", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground-heading)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "hampers_btn": { "type": "_product-list-button", "name": "View all", "settings": { "label": "View all gifts", "open_in_new_tab": false, "style_class": "link", "width": "fit-content", "custom_width": 100, "width_mobile": "fit-content", "custom_width_mobile": 100 } }
+          },
+          "block_order": ["hampers_title","hampers_btn"]
+        },
+        "static-product-card": {
+          "type": "_product-card", "name": "Product card", "static": true,
+          "settings": { "product_card_gap": 4, "inherit_color_scheme": true, "color_scheme": "", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 0, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 },
+          "blocks": {
+            "gallery_hampers": { "type": "_product-card-gallery", "name": "Media", "settings": { "image_ratio": "adapt", "border": "none", "border_width": 1, "border_opacity": 100, "border_radius": 8, "padding-block-start": 0, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "title_hampers": { "type": "product-title", "name": "Title", "settings": { "width": "100%", "max_width": "normal", "alignment": "left", "type_preset": "rte", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "pretty", "color": "var(--color-foreground)", "background": false, "background_color": "#00000026", "corner_radius": 0, "padding-block-start": 8, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } },
+            "price_hampers": { "type": "price", "name": "Price", "settings": { "show_sale_price_first": true, "show_installments": false, "show_tax_info": false, "type_preset": "h6", "width": "100%", "alignment": "left", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "color": "var(--color-foreground)", "padding-block-start": 4, "padding-block-end": 0, "padding-inline-start": 0, "padding-inline-end": 0 } }
+          },
+          "block_order": ["gallery_hampers","title_hampers","price_hampers"]
+        }
+      },
+      "name": "Return Gift Hampers",
+      "settings": { "collection": "all", "layout_type": "grid", "carousel_on_mobile": true, "max_products": 4, "columns": 4, "mobile_columns": "2", "mobile_card_size": "60cqw", "columns_gap": 12, "rows_gap": 24, "icons_style": "arrow", "icons_shape": "circle", "section_width": "page-width", "horizontal_alignment": "flex-start", "gap": 28, "color_scheme": "scheme-1", "padding-block-start": 56, "padding-block-end": 56 }
+    },
+
+    "features_bar": {
+      "type": "features-bar",
+      "blocks": {
+        "feat_1": { "type": "feature", "settings": { "icon": "🏆", "title": "Unbeatable Quality", "description": "Premium paper, vibrant printing and lasting quality for every invitation." } },
+        "feat_2": { "type": "feature", "settings": { "icon": "🎨", "title": "500+ Exclusive Designs", "description": "Traditional to modern — unique designs blending culture with creativity." } },
+        "feat_3": { "type": "feature", "settings": { "icon": "✏️", "title": "Personalised Touch", "description": "Custom cards tailored perfectly to your names, date and special day." } }
+      },
+      "block_order": ["feat_1","feat_2","feat_3"],
+      "name": "Why King of Cards",
+      "settings": { "heading": "Why King of Cards", "subheading": "Trusted by 40,000+ happy couples across India", "color_scheme": "scheme-2", "section_width": "page-width", "padding-block-start": 64, "padding-block-end": 64 }
+    },
+
+    "custom_testimonials": {
+      "type": "custom-liquid",
+      "name": "Customer Testimonials",
+      "settings": {
+        "custom_liquid": "<style>.koc-t{max-width:1000px;margin:0 auto}.koc-t-lbl{text-align:center;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#b8751b;margin-bottom:8px}.koc-t-h{text-align:center;font-size:1.5rem;font-weight:700;margin-bottom:28px}.koc-t-g{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}@media(max-width:700px){.koc-t-g{grid-template-columns:1fr}}.koc-t-c{background:white;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.07)}.koc-stars{color:#f0b429;font-size:1.1rem;margin-bottom:10px}.koc-quote{font-size:0.9rem;color:#555;line-height:1.7;margin-bottom:14px;font-style:italic}.koc-name{font-size:0.85rem;font-weight:700;color:#333}</style><div class='koc-t'><p class='koc-t-lbl'>Happy Customers</p><h2 class='koc-t-h'>What Our Customers Say</h2><div class='koc-t-g'><div class='koc-t-c'><div class='koc-stars'>★★★★★</div><p class='koc-quote'>\"Absolutely beautiful cards! The quality exceeded our expectations. Everyone at the wedding was asking where we got the invitations from.\"</p><strong class='koc-name'>— Priya &amp; Rahul, Bangalore</strong></div><div class='koc-t-c'><div class='koc-stars'>★★★★★</div><p class='koc-quote'>\"Ordered custom cards for our ceremony and the team was super responsive. Delivered perfectly on time. Highly recommended!\"</p><strong class='koc-name'>— Ananya &amp; Karthik, Hyderabad</strong></div><div class='koc-t-c'><div class='koc-stars'>★★★★★</div><p class='koc-quote'>\"The laser-cut designs are absolutely stunning. Our guests were so impressed. Will definitely order again for future celebrations.\"</p><strong class='koc-name'>— Meera &amp; Aditya, Chennai</strong></div></div></div>",
+        "color_scheme": "scheme-2",
+        "section_width": "page-width",
+        "padding-block-start": 56,
+        "padding-block-end": 56
+      }
+    },
+
+    "marquee_social": {
+      "type": "marquee",
+      "blocks": {
+        "text_s1": { "type": "text", "settings": { "text": "<p><strong>40,000+ Happy Customers</strong></p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "1rem", "line_height": "normal", "letter_spacing": "normal", "case": "none", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_s2": { "type": "text", "settings": { "text": "<p>★ ★ ★ ★ ★</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.9rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_s3": { "type": "text", "settings": { "text": "<p><strong>Premium Quality Invitations</strong></p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "1rem", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_s4": { "type": "text", "settings": { "text": "<p>★ ★ ★ ★ ★</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.9rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_s5": { "type": "text", "settings": { "text": "<p><strong>Custom Designs Available</strong></p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "1rem", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_s6": { "type": "text", "settings": { "text": "<p>★ ★ ★ ★ ★</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.9rem", "wrap": "nowrap", "width": "fit-content" } },
+        "text_s7": { "type": "text", "settings": { "text": "<p><strong>Fast Delivery Nationwide</strong></p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "1rem", "wrap": "nowrap", "width": "fit-content", "alignment": "center" } },
+        "text_s8": { "type": "text", "settings": { "text": "<p>★ ★ ★ ★ ★</p>", "type_preset": "custom", "font": "var(--font-body--family)", "font_size": "0.9rem", "wrap": "nowrap", "width": "fit-content" } }
+      },
+      "block_order": ["text_s1","text_s2","text_s3","text_s4","text_s5","text_s6","text_s7","text_s8"],
+      "name": "Social Proof Strip",
+      "settings": { "movement_direction": "reverse", "color_scheme": "scheme-1", "padding-block-start": 20, "padding-block-end": 20, "gap_between_elements": 32 }
+    },
+
+    "instagram_cta": {
+      "type": "instagram-cta",
+      "name": "Instagram Community",
+      "settings": {
+        "eyebrow": "Instagram Community",
+        "follower_count": "350K+",
+        "heading": "Be Part of Our Family",
+        "subtext": "Follow us for daily inspiration, behind-the-scenes and new arrivals",
+        "handle": "@kingofcards.in",
+        "instagram_url": "https://www.instagram.com/kingofcards.in/",
+        "btn_label": "Follow on Instagram",
+        "show_follower_count": true,
         "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "section_width": "page-width",
+        "padding-block-start": 72,
+        "padding-block-end": 72
       }
     }
   },
   "order": [
+    "marquee_announce",
     "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "collection_list_categories",
+    "product_list_deals",
+    "product_list_trendy",
+    "stats_bar",
+    "store_locations",
+    "product_list_premium",
+    "custom_price_range",
+    "product_list_sale",
+    "product_list_new",
+    "catalogue_section",
+    "product_list_luxe",
+    "product_list_hampers",
+    "features_bar",
+    "custom_testimonials",
+    "marquee_social",
+    "instagram_cta"
   ]
 }
