@@ -1,11 +1,13 @@
-<section class="lifestyle-section"> 
+<section class="lifestyle-section">
   <div class="lifestyle-inner">
+
     <div class="lifestyle-img-wrap">
+
       <div class="lifestyle-img-frame">
         {% if section.settings.image != blank %}
           {{
             section.settings.image
-            | image_url: width: 1000
+            | image_url: width: 1200
             | image_tag:
               loading: 'lazy',
               alt: section.settings.heading
@@ -14,35 +16,44 @@
           {{ 'image' | placeholder_svg_tag }}
         {% endif %}
       </div>
+
       {% if section.settings.badge_text != blank %}
         <div class="ls-badge">
           {{ section.settings.badge_text }}
         </div>
       {% endif %}
+
     </div>
+
     <div class="lifestyle-content">
+
       {% if section.settings.kicker != blank %}
         <div class="ls-kicker">
           {{ section.settings.kicker }}
         </div>
       {% endif %}
+
       {% if section.settings.heading != blank %}
         <h2 class="ls-title">
           {{ section.settings.heading }}
         </h2>
       {% endif %}
+
       {% if section.settings.description != blank %}
         <div class="ls-copy">
           {{ section.settings.description }}
         </div>
       {% endif %}
+
       {% if section.blocks.size > 0 %}
         <ul class="ls-features">
           {% for block in section.blocks %}
             <li {{ block.shopify_attributes }}>
               <div class="ls-dot"></div>
+
               <div>
                 <strong>{{ block.settings.title }}</strong>
+
                 {% if block.settings.text != blank %}
                   — {{ block.settings.text }}
                 {% endif %}
@@ -51,23 +62,30 @@
           {% endfor %}
         </ul>
       {% endif %}
+
       <div class="ls-btns">
+
         {% if section.settings.btn_label_1 != blank %}
           <a href="{{ section.settings.btn_link_1 }}" class="ls-btn-p">
             {{ section.settings.btn_label_1 }}
           </a>
         {% endif %}
+
         {% if section.settings.btn_label_2 != blank %}
           <a href="{{ section.settings.btn_link_2 }}" class="ls-btn-s">
             {{ section.settings.btn_label_2 }}
           </a>
         {% endif %}
+
       </div>
+
     </div>
+
   </div>
 </section>
 
 {% style %}
+
 .lifestyle-section{
   background: {{ section.settings.bg_color }};
   padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
@@ -87,15 +105,16 @@
 }
 
 .lifestyle-img-frame{
-  border-radius: {{ section.settings.image_radius }}px;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
+  border-radius: {{ section.settings.image_radius }}px;
 }
 
-.lifestyle-img-frame img{
+.lifestyle-img-frame img,
+.lifestyle-img-frame svg{
   width: 100%;
-  display: block;
   height: auto;
+  display: block;
 }
 
 .ls-badge{
@@ -103,11 +122,12 @@
   bottom: 25px;
   left: 25px;
   background: {{ section.settings.badge_bg }};
-  color: {{ section.settings.badge_text }};
+  color: {{ section.settings.badge_text_color }};
   padding: 12px 20px;
   border-radius: 100px;
   font-size: 14px;
   font-weight: 600;
+  line-height: 1;
   box-shadow: 0 10px 30px rgba(0,0,0,.12);
 }
 
@@ -117,6 +137,7 @@
 
 .ls-kicker{
   font-size: 14px;
+  line-height: 1.2;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 18px;
@@ -130,6 +151,7 @@
   margin: 0 0 25px;
   font-weight: 800;
   color: {{ section.settings.heading_color }};
+  white-space: pre-line;
 }
 
 .ls-copy{
@@ -137,6 +159,10 @@
   line-height: 1.7;
   margin-bottom: 30px;
   color: {{ section.settings.copy_color }};
+}
+
+.ls-copy p{
+  margin: 0;
 }
 
 .ls-features{
@@ -178,7 +204,7 @@
   border-radius: 100px;
   text-decoration: none;
   font-weight: 600;
-  transition: .3s ease;
+  transition: all .3s ease;
 }
 
 .ls-btn-p{
@@ -198,10 +224,11 @@
 
 .ls-btn-s:hover{
   background: {{ section.settings.secondary_btn_border }};
-  color: #fff;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 991px){
+
   .lifestyle-inner{
     grid-template-columns: 1fr;
     gap: 40px;
@@ -226,6 +253,7 @@
 }
 
 @media screen and (max-width: 575px){
+
   .lifestyle-section{
     padding-left: 15px;
     padding-right: 15px;
@@ -249,6 +277,7 @@
     padding: 10px 16px;
   }
 }
+
 {% endstyle %}
 
 {% schema %}
@@ -359,7 +388,7 @@
     },
     {
       "type": "color",
-      "id": "badge_text",
+      "id": "badge_text_color",
       "label": "Badge Text Color",
       "default": "#111111"
     },
