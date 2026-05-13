@@ -39,7 +39,6 @@
             {% assign mobile_image = block.settings.mobile_image | default: block.settings.image %}
 
             {% if desktop_image != blank %}
-              <picture>
                 {% if mobile_image != blank %}
                   <source
                     media="(max-width: 767px)"
@@ -55,7 +54,6 @@
                     sizes: '(max-width: 767px) 100vw, 33vw',
                     alt: block.settings.heading
                 }}
-              </picture>
             {% else %}
               {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
             {% endif %}
