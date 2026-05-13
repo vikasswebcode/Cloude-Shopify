@@ -360,125 +360,248 @@
 </style>
 
 <script>
-function updateCardVariant(card) {
-  const variants = JSON.parse(
-    card.querySelector('.hcs-variants-json').textContent
-  );
+document.addEventListener('DOMContentLoaded', function () {
+  const currencySymbol = "{{ 0 | money | replace: '0.00', '' | replace: '0,00', '' | strip }}";
 
-  const swatchContainer = card.querySelector('.hcs-swatches');
-  const sizeContainer = card.querySelector('.hcs-sizes');
-
-  let selectedColor = null;
-  let selectedSize = null;
-
-  // Get selected color
-  if (swatchContainer) {
-    const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
-    if (activeSwatch) {
-      selectedColor = activeSwatch.getAttribute('data-value');
-    }
+  function formatMoney(cents) {
+    return `${currencySymbol}${(cents / 100).toFixed(2)}`;
   }
 
-  // Get selected size
-  if (sizeContainer) {
-    const activeSize = sizeContainer.querySelector('.hcs-size.active');
-    if (activeSize) {
-      selectedSize = activeSize.getAttribute('data-value');
-    }
-  }
+  function updateCardVariant(card) {
+    const variantsJson = card.querySelector('.hcs-variants-json');
+    if (!variantsJson) return;
 
-  // Find exact matching variant
-  const matchedVariant = variants.find((variant) => {
-    let colorMatch = true;
-    let sizeMatch = true;
+    const variants = JSON.parse(variantsJson.textContent);
 
-    // Match color
-    if (selectedColor) {
-      colorMatch = variant.options.some(
-        (option) =>
-          option &&
-          option.toString().toLowerCase() === selectedColor.toLowerCase()
-      );
+    const swatchContainer = card.querySelector('.hcs-swatches');
+    const sizeContainer = card.querySelector('.hcs-sizes');
+
+    let selectedColor = null;
+    let selectedSize = null;
+
+    // Selected Color
+    if (swatchContainer) {
+      const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
+      if (activeSwatch) {
+        selectedColor = activeSwatch.dataset.value;
+      }
     }
 
-    // Match size
-    if (selectedSize) {
-      sizeMatch = variant.options.some(
-        (option) =>
-          option &&
-          option.toString().toLowerCase() === selectedSize.toLowerCase()
-      );
+    // Selected Size
+    if (sizeContainer) {
+      const activeSize = sizeContainer.querySelector('.hcs-size.active');
+      if (activeSize) {
+        selectedSize = activeSize.dataset.value;
+      }
     }
 
-    return colorMatch && sizeMatch;
-  });
+    // Find exact matching variant
+    const matchedVariant = variants.find((variant) => {
+      let colorMatch = true;
+      let sizeMatch = true;
 
-  const atcButton = card.querySelector('.hcs-add-to-cart');
-  const inputHidden = card.querySelector('.hcs-variant-id');
-  const currentPriceEl = card.querySelector('.hcs-current-price');
-  const priceWrapper = card.querySelector('.hcs-price');
-  let comparePriceEl = card.querySelector('.hcs-compare-price');
-  const imgEl = card.querySelector('.hcs-image');
+      if (selectedColor) {
+        colorMatch = variant.options.some(
+          (option) =>
+            option &&
+            option.toString().toLowerCase() === selectedColor.toLowerCase()
+        );
+      }
 
-  if (matchedVariant) {
-    // Update variant ID
-    inputHidden.value = matchedVariant.id;
+      if (selectedSize) {
+        sizeMatch = variant.options.some(
+          (option) =>
+            option &&
+            option.toString().toLowerCase() === selectedSize.toLowerCase()
+        );
+      }
 
-    // Update URL to selected variant
-    const productUrl = card.getAttribute('data-product-url');
-    const productLinks = card.querySelectorAll(
-      '.hcs-image-link, .hcs-title a'
-    );
-
-    productLinks.forEach((link) => {
-      link.href = `${productUrl}?variant=${matchedVariant.id}`;
+      return colorMatch && sizeMatch;
     });
 
-    // Update image from selected variant
-    if (
-      matchedVariant.featured_image &&
-      matchedVariant.featured_image.src &&
-      imgEl
-    ) {
-      imgEl.src = matchedVariant.featured_image.src;
-      imgEl.srcset = '';
+    const atcButton = card.querySelector('.hcs-add-to-cart');
+    const inputHidden = card.querySelector('.hcs-variant-id');
+    const currentPriceEl = card.querySelector('.hcs-current-price');
+    const priceWrapper = card.querySelector('.hcs-price');
+    let comparePriceEl = card.querySelector('.hcs-compare-price');
+    const imgEl = card.querySelector('.hcs-image');
+
+    if (!matchedVariant) {
+      if (atcButton) {
+        atcButton.disabled = true;
+        atcButton.textContent = 'Unavailable';
+      }
+      return;
     }
 
-    // Update current price
-    currentPriceEl.textContent = formatMoney(matchedVariant.price);
+    // Update hidden variant ID
+    if (inputHidden) {
+      inputHidden.value = matchedVariant.id;
+    }
 
-    // Update compare price
+    // Update product URLs
+    const productUrl = card.dataset.productUrl;
+    if (productUrl) {
+      card.querySelectorAll('.hcs-image-link, .hcs-title a').forEach((link) => {
+        link.href = `${productUrl}?variant=${matchedVariant.id}`;
+      });
+    }
+
+    // Update image
+    if (imgEl && matchedVariant.featured_image) {
+      const imageUrl =
+        matchedVariant.featured_image.src ||
+        matchedVariant.featured_image.url;
+
+      if (imageUrl) {
+        imgEl.src = imageUrl;
+        imgEl.removeAttribute('srcset');
+      }
+    }
+
+    // Update price
+    if (currentPriceEl) {
+      currentPriceEl.textContent = formatMoney(matchedVariant.price);
+    }
+
+    // Update compare at price
     if (
       matchedVariant.compare_at_price &&
       matchedVariant.compare_at_price > matchedVariant.price
     ) {
-      if (!comparePriceEl) {
+      if (!comparePriceEl && priceWrapper) {
         comparePriceEl = document.createElement('span');
         comparePriceEl.className = 'hcs-compare-price';
         priceWrapper.insertBefore(comparePriceEl, currentPriceEl);
       }
 
-      comparePriceEl.textContent = formatMoney(
-        matchedVariant.compare_at_price
-      );
+      if (comparePriceEl) {
+        comparePriceEl.textContent = formatMoney(
+          matchedVariant.compare_at_price
+        );
+      }
     } else if (comparePriceEl) {
       comparePriceEl.remove();
     }
 
     // Update button state
-    if (matchedVariant.available) {
-      atcButton.disabled = false;
-      atcButton.textContent = 'Add to Cart';
-    } else {
-      atcButton.disabled = true;
-      atcButton.textContent = 'Sold Out';
+    if (atcButton) {
+      if (matchedVariant.available) {
+        atcButton.disabled = false;
+        atcButton.textContent = 'Add to Cart';
+      } else {
+        atcButton.disabled = true;
+        atcButton.textContent = 'Sold Out';
+      }
     }
-  } else {
-    // No matching variant
-    atcButton.disabled = true;
-    atcButton.textContent = 'Unavailable';
   }
-}
+
+  // Handle clicks for all cards (works even with multiple cards on one page)
+  document.addEventListener('click', function (e) {
+    const swatch = e.target.closest('.hcs-swatch');
+    const sizeBtn = e.target.closest('.hcs-size');
+    const atcButton = e.target.closest('.hcs-add-to-cart');
+
+    // Swatch Click
+    if (swatch) {
+      e.preventDefault();
+
+      const card = swatch.closest('.hcs-card-inner');
+      if (!card) return;
+
+      // Remove active only within current card
+      card.querySelectorAll('.hcs-swatch').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      swatch.classList.add('active');
+
+      updateCardVariant(card);
+      return;
+    }
+
+    // Size Click
+    if (sizeBtn) {
+      e.preventDefault();
+
+      const card = sizeBtn.closest('.hcs-card-inner');
+      if (!card) return;
+
+      // Remove active only within current card
+      card.querySelectorAll('.hcs-size').forEach((btn) => {
+        btn.classList.remove('active');
+      });
+
+      sizeBtn.classList.add('active');
+
+      updateCardVariant(card);
+      return;
+    }
+
+    // Add to Cart Click
+    if (atcButton) {
+      e.preventDefault();
+
+      const card = atcButton.closest('.hcs-card-inner');
+      if (!card) return;
+
+      const variantInput = card.querySelector('.hcs-variant-id');
+      if (!variantInput || !variantInput.value) return;
+
+      const variantId = variantInput.value;
+
+      atcButton.disabled = true;
+      atcButton.textContent = 'Adding...';
+
+      fetch(window.Shopify.routes.root + 'cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: 1
+        })
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to add to cart');
+          }
+          return response.json();
+        })
+        .then(() => {
+          atcButton.textContent = 'Added!';
+
+          // Refresh cart drawer if available
+          if (
+            document.querySelector('cart-drawer') ||
+            document.querySelector('cart-notification')
+          ) {
+            window.dispatchEvent(new Event('cart:updated'));
+          }
+
+          setTimeout(() => {
+            atcButton.textContent = 'Add to Cart';
+            atcButton.disabled = false;
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error(error);
+          atcButton.textContent = 'Error';
+
+          setTimeout(() => {
+            atcButton.textContent = 'Add to Cart';
+            atcButton.disabled = false;
+          }, 2000);
+        });
+    }
+  });
+
+  // Initialize all cards on page
+  document.querySelectorAll('.hcs-card-inner').forEach((card) => {
+    updateCardVariant(card);
+  });
+});
 </script>
 
 
