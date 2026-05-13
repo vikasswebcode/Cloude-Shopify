@@ -331,7 +331,33 @@
   background: #999;
   cursor: not-allowed;
 }
+/* Add this CSS at the end of your existing <style> block */
 
+.hcs-size.disabled,
+.hcs-swatch.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.hcs-size.disabled {
+  text-decoration: line-through;
+}
+
+.hcs-swatch.disabled {
+  position: relative;
+}
+
+.hcs-swatch.disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: 2px;
+  background: #111;
+  transform: rotate(-45deg);
+}
 @media screen and (max-width: 991px) {
   .hcs-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -358,13 +384,17 @@
 }
 </style>
 
-/* Replace your entire <script>...</script> block with this improved version */
+/* Replace your entire <script>...</script> with this version.
+   Features:
+   1. Color select karne par sirf us color ke available sizes active rahenge.
+   2. Jo size/color available nahi hai un par "disabled" class lagegi.
+   3. Disabled options par line-through (cut) dikhega.
+   4. Variant image, price, compare price aur links automatically update honge.
+*/
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  /**
-   * Format money safely
-   */
+
   function formatMoney(cents) {
     if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
       return Shopify.formatMoney(cents, "{{ shop.money_format }}");
@@ -372,147 +402,202 @@ document.addEventListener('DOMContentLoaded', function () {
     return (cents / 100).toFixed(2);
   }
 
-  /**
-   * Get selected option values from active buttons
-   */
-  function getSelectedOptions(card) {
-    const selected = {};
-
-    const activeSwatch = card.querySelector('.hcs-swatches .hcs-swatch.active');
-    if (activeSwatch) {
-      selected.color = activeSwatch.dataset.value;
+  function getVariants(card) {
+    const json = card.querySelector('.hcs-variants-json');
+    if (!json) return [];
+    try {
+      return JSON.parse(json.textContent);
+    } catch (e) {
+      return [];
     }
-
-    const activeSize = card.querySelector('.hcs-sizes .hcs-size.active');
-    if (activeSize) {
-      selected.size = activeSize.dataset.value;
-    }
-
-    return selected;
   }
 
-  /**
-   * Find matching variant based on exact option positions
-   */
-  function findMatchingVariant(card, variants) {
-    const swatchContainer = card.querySelector('.hcs-swatches');
-    const sizeContainer = card.querySelector('.hcs-sizes');
+  function getOptionIndexes(card) {
+    const swatches = card.querySelector('.hcs-swatches');
+    const sizes = card.querySelector('.hcs-sizes');
 
-    const selected = getSelectedOptions(card);
+    return {
+      colorIndex: swatches ? parseInt(swatches.dataset.optionIndex, 10) : null,
+      sizeIndex: sizes ? parseInt(sizes.dataset.optionIndex, 10) : null
+    };
+  }
 
-    const colorOptionIndex = swatchContainer
-      ? parseInt(swatchContainer.dataset.optionIndex, 10)
-      : null;
+  function getSelectedValues(card) {
+    const activeSwatch = card.querySelector('.hcs-swatch.active');
+    const activeSize = card.querySelector('.hcs-size.active');
 
-    const sizeOptionIndex = sizeContainer
-      ? parseInt(sizeContainer.dataset.optionIndex, 10)
-      : null;
+    return {
+      color: activeSwatch ? activeSwatch.dataset.value : null,
+      size: activeSize ? activeSize.dataset.value : null
+    };
+  }
 
-    // First try exact match
-    let matchedVariant = variants.find(function (variant) {
-      let matches = true;
+  function findVariant(card) {
+    const variants = getVariants(card);
+    const { colorIndex, sizeIndex } = getOptionIndexes(card);
+    const { color, size } = getSelectedValues(card);
 
-      if (
-        colorOptionIndex !== null &&
-        selected.color &&
-        variant.options[colorOptionIndex] !== selected.color
-      ) {
-        matches = false;
+    let matched = variants.find(function (variant) {
+      if (color && colorIndex !== null && variant.options[colorIndex] !== color) {
+        return false;
       }
 
-      if (
-        sizeOptionIndex !== null &&
-        selected.size &&
-        variant.options[sizeOptionIndex] !== selected.size
-      ) {
-        matches = false;
+      if (size && sizeIndex !== null && variant.options[sizeIndex] !== size) {
+        return false;
       }
 
-      return matches;
+      return true;
     });
 
-    // Fallback to first available variant
-    if (!matchedVariant) {
-      matchedVariant =
-        variants.find(function (variant) {
-          return variant.available;
-        }) || variants[0];
+    if (!matched) {
+      matched = variants.find(v => v.available) || variants[0];
     }
 
-    return matchedVariant;
+    return matched;
   }
 
   /**
-   * Update card UI according to selected variant
+   * Update size availability based on selected color
    */
-  function updateCardVariant(card) {
-    const variantsJson = card.querySelector('.hcs-variants-json');
-    if (!variantsJson) return;
+  function updateSizeAvailability(card) {
+    const variants = getVariants(card);
+    const { colorIndex, sizeIndex } = getOptionIndexes(card);
+    const { color } = getSelectedValues(card);
 
-    let variants = [];
-    try {
-      variants = JSON.parse(variantsJson.textContent);
-    } catch (e) {
-      console.error('Invalid variant JSON', e);
-      return;
+    if (sizeIndex === null) return;
+
+    const sizeButtons = card.querySelectorAll('.hcs-size');
+
+    sizeButtons.forEach(function (button) {
+      const sizeValue = button.dataset.value;
+
+      const available = variants.some(function (variant) {
+        const colorMatch =
+          !color ||
+          colorIndex === null ||
+          variant.options[colorIndex] === color;
+
+        const sizeMatch = variant.options[sizeIndex] === sizeValue;
+
+        return colorMatch && sizeMatch && variant.available;
+      });
+
+      if (available) {
+        button.classList.remove('disabled');
+        button.removeAttribute('aria-disabled');
+      } else {
+        button.classList.add('disabled');
+        button.setAttribute('aria-disabled', 'true');
+        button.classList.remove('active');
+      }
+    });
+
+    // If no active size or active size disabled, auto-select first available size
+    const activeSize = card.querySelector('.hcs-size.active');
+    if (!activeSize) {
+      const firstAvailable = card.querySelector('.hcs-size:not(.disabled)');
+      if (firstAvailable) {
+        firstAvailable.classList.add('active');
+      }
     }
+  }
 
-    if (!variants.length) return;
+  /**
+   * Update color availability based on selected size
+   */
+  function updateColorAvailability(card) {
+    const variants = getVariants(card);
+    const { colorIndex, sizeIndex } = getOptionIndexes(card);
+    const { size } = getSelectedValues(card);
 
-    const matchedVariant = findMatchingVariant(card, variants);
-    if (!matchedVariant) return;
+    if (colorIndex === null) return;
+
+    const swatches = card.querySelectorAll('.hcs-swatch');
+
+    swatches.forEach(function (button) {
+      const colorValue = button.dataset.value;
+
+      const available = variants.some(function (variant) {
+        const colorMatch = variant.options[colorIndex] === colorValue;
+
+        const sizeMatch =
+          !size ||
+          sizeIndex === null ||
+          variant.options[sizeIndex] === size;
+
+        return colorMatch && sizeMatch && variant.available;
+      });
+
+      if (available) {
+        button.classList.remove('disabled');
+        button.removeAttribute('aria-disabled');
+      } else {
+        button.classList.add('disabled');
+        button.setAttribute('aria-disabled', 'true');
+        button.classList.remove('active');
+      }
+    });
+
+    // If no active color, select first available
+    const activeSwatch = card.querySelector('.hcs-swatch.active');
+    if (!activeSwatch) {
+      const firstAvailable = card.querySelector('.hcs-swatch:not(.disabled)');
+      if (firstAvailable) {
+        firstAvailable.classList.add('active');
+      }
+    }
+  }
+
+  /**
+   * Update UI with selected variant
+   */
+  function updateCard(card) {
+    updateSizeAvailability(card);
+    updateColorAvailability(card);
+
+    const variant = findVariant(card);
+    if (!variant) return;
 
     const productUrl = card.dataset.productUrl;
+    const variantUrl = productUrl + '?variant=' + variant.id;
 
-    const submitButton = card.querySelector('.hcs-submit-button');
+    // Hidden input
     const hiddenInput = card.querySelector('.hcs-variant-id');
+    if (hiddenInput) hiddenInput.value = variant.id;
+
+    // Update links
+    card.querySelectorAll('.hcs-image-link, .hcs-title a, .hcs-submit-button')
+      .forEach(function (link) {
+        if (link.tagName.toLowerCase() === 'a') {
+          link.href = variantUrl;
+        }
+      });
+
+    // Update image
     const image = card.querySelector('.hcs-image');
+    if (
+      image &&
+      variant.featured_image &&
+      (variant.featured_image.src || variant.featured_image.url)
+    ) {
+      image.src =
+        variant.featured_image.src ||
+        variant.featured_image.url;
+      image.removeAttribute('srcset');
+    }
+
+    // Update prices
     const currentPrice = card.querySelector('.hcs-current-price');
     const priceWrapper = card.querySelector('.hcs-price');
     let comparePrice = card.querySelector('.hcs-compare-price');
 
-    /* Update hidden variant input */
-    if (hiddenInput) {
-      hiddenInput.value = matchedVariant.id;
-    }
-
-    /* Update all links with selected variant */
-    if (productUrl) {
-      const variantUrl = productUrl + '?variant=' + matchedVariant.id;
-
-      card.querySelectorAll('.hcs-image-link, .hcs-title a, .hcs-submit-button')
-        .forEach(function (link) {
-          if (link.tagName.toLowerCase() === 'a') {
-            link.href = variantUrl;
-          }
-        });
-    }
-
-    /* Update image */
-    if (
-      image &&
-      matchedVariant.featured_image &&
-      (matchedVariant.featured_image.src || matchedVariant.featured_image.url)
-    ) {
-      const imageUrl =
-        matchedVariant.featured_image.src ||
-        matchedVariant.featured_image.url;
-
-      if (image.src !== imageUrl) {
-        image.src = imageUrl;
-        image.removeAttribute('srcset');
-      }
-    }
-
-    /* Update current price */
     if (currentPrice) {
-      currentPrice.textContent = formatMoney(matchedVariant.price);
+      currentPrice.textContent = formatMoney(variant.price);
     }
 
-    /* Update compare-at price */
     if (
-      matchedVariant.compare_at_price &&
-      matchedVariant.compare_at_price > matchedVariant.price
+      variant.compare_at_price &&
+      variant.compare_at_price > variant.price
     ) {
       if (!comparePrice && priceWrapper) {
         comparePrice = document.createElement('span');
@@ -522,16 +607,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (comparePrice) {
         comparePrice.textContent = formatMoney(
-          matchedVariant.compare_at_price
+          variant.compare_at_price
         );
       }
     } else if (comparePrice) {
       comparePrice.remove();
     }
 
-    /* Update button state */
+    // Update submit button
+    const submitButton = card.querySelector('.hcs-submit-button');
     if (submitButton) {
-      if (matchedVariant.available) {
+      if (variant.available) {
         submitButton.classList.remove('disabled');
         submitButton.removeAttribute('aria-disabled');
         submitButton.textContent = 'Submit';
@@ -544,61 +630,63 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /**
-   * Activate one button in a group
+   * Activate clicked button
    */
-  function setActiveButton(button, selector) {
-    const container = button.parentElement;
-    if (!container) return;
+  function activate(button, selector) {
+    if (button.classList.contains('disabled')) return false;
 
-    container.querySelectorAll(selector).forEach(function (btn) {
-      btn.classList.remove('active');
+    const container = button.parentElement;
+    container.querySelectorAll(selector).forEach(function (el) {
+      el.classList.remove('active');
     });
 
     button.classList.add('active');
+    return true;
   }
 
   /**
-   * Event delegation
+   * Click events
    */
-  document.addEventListener('click', function (event) {
-    /* Color swatch click */
-    const swatch = event.target.closest('.hcs-swatch');
+  document.addEventListener('click', function (e) {
+    const swatch = e.target.closest('.hcs-swatch');
     if (swatch) {
-      event.preventDefault();
+      e.preventDefault();
 
       const card = swatch.closest('.hcs-card-inner');
       if (!card) return;
 
-      setActiveButton(swatch, '.hcs-swatch');
-      updateCardVariant(card);
+      if (activate(swatch, '.hcs-swatch')) {
+        updateCard(card);
+      }
       return;
     }
 
-    /* Size click */
-    const sizeButton = event.target.closest('.hcs-size');
-    if (sizeButton) {
-      event.preventDefault();
+    const size = e.target.closest('.hcs-size');
+    if (size) {
+      e.preventDefault();
 
-      const card = sizeButton.closest('.hcs-card-inner');
+      const card = size.closest('.hcs-card-inner');
       if (!card) return;
 
-      setActiveButton(sizeButton, '.hcs-size');
-      updateCardVariant(card);
+      if (activate(size, '.hcs-size')) {
+        updateCard(card);
+      }
       return;
     }
 
-    /* Prevent disabled button clicks */
-    const disabledButton = event.target.closest('.hcs-submit-button.disabled');
+    const disabledButton = e.target.closest(
+      '.hcs-submit-button.disabled'
+    );
     if (disabledButton) {
-      event.preventDefault();
+      e.preventDefault();
     }
   });
 
   /**
-   * Initialize all product cards
+   * Initialize all cards
    */
   document.querySelectorAll('.hcs-card-inner').forEach(function (card) {
-    updateCardVariant(card);
+    updateCard(card);
   });
 });
 </script>
