@@ -1,16 +1,3 @@
-{% comment %}
-  Horizontal Collection Showcase Section
-  - Each block selects a different collection
-  - Shows first product from each collection
-  - Sale badge
-  - Product image
-  - Title
-  - Compare price + sale price
-  - Clickable Color swatches
-  - Clickable Size options
-  - Variant image updates
-  - AJAX Add to Cart button
-{% endcomment %}
 
 <section class="horizontal-collection-showcase section-{{ section.id }}">
   <div class="page-width">
@@ -373,136 +360,134 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.section-{{ section.id }} .hcs-card-inner').forEach(function(card) {
+document.addEventListener('DOMContentLoaded', function() {
+  const currencySymbol = "{{ 0 | money | replace: '0.00', '' | replace: '0,00', '' | strip }}";
+
+  function formatMoney(cents) {
+    let dollars = (cents / 100).toFixed(2);
+    return `${currencySymbol}${dollars}`;
+  }
+
+  function updateCardVariant(card) {
     const variants = JSON.parse(card.querySelector('.hcs-variants-json').textContent);
-    const image = card.querySelector('.hcs-image');
-    const variantInput = card.querySelector('.hcs-variant-id');
-    const price = card.querySelector('.hcs-current-price');
-    const comparePrice = card.querySelector('.hcs-compare-price');
-    const addToCart = card.querySelector('.hcs-add-to-cart');
+    const swatchContainer = card.querySelector('.hcs-swatches');
+    const sizeContainer = card.querySelector('.hcs-sizes');
+    
+    let selectedColor = null;
+    let selectedSize = null;
 
-    function getSelectedValues() {
-      const selected = {};
-
-      const activeSwatch = card.querySelector('.hcs-swatches .hcs-swatch.active');
-      if (activeSwatch) {
-        const index = parseInt(activeSwatch.closest('.hcs-swatches').dataset.optionIndex, 10);
-        selected[index] = activeSwatch.dataset.value;
-      }
-
-      const activeSize = card.querySelector('.hcs-sizes .hcs-size.active');
-      if (activeSize) {
-        const index = parseInt(activeSize.closest('.hcs-sizes').dataset.optionIndex, 10);
-        selected[index] = activeSize.dataset.value;
-      }
-
-      return selected;
+    if (swatchContainer) {
+      const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
+      if (activeSwatch) selectedColor = activeSwatch.getAttribute('data-value');
     }
 
-    function findVariant() {
-      const selected = getSelectedValues();
-
-      return variants.find(function(variant) {
-        for (const index in selected) {
-          if (variant.options[index] !== selected[index]) {
-            return false;
-          }
-        }
-        return true;
-      }) || variants[0];
+    if (sizeContainer) {
+      const activeSize = sizeContainer.querySelector('.hcs-size.active');
+      if (activeSize) selectedSize = activeSize.getAttribute('data-value');
     }
 
-    function updateVariant() {
-      const variant = findVariant();
-      if (!variant) return;
-
-      variantInput.value = variant.id;
-
-      if (variant.featured_image && image) {
-        image.src = variant.featured_image.src;
-      }
-
-      if (price) {
-        price.textContent = Shopify.formatMoney(
-          variant.price,
-          window.theme?.moneyFormat || '{{ shop.money_format | escape }}'
-        );
-      }
-
-      if (comparePrice) {
-        if (variant.compare_at_price && variant.compare_at_price > variant.price) {
-          comparePrice.textContent = Shopify.formatMoney(
-            variant.compare_at_price,
-            window.theme?.moneyFormat || '{{ shop.money_format | escape }}'
-          );
-          comparePrice.style.display = '';
-        } else {
-          comparePrice.style.display = 'none';
-        }
-      }
-
-      addToCart.disabled = !variant.available;
-      addToCart.textContent = variant.available ? 'Add to Cart' : 'Sold Out';
-    }
-
-    card.querySelectorAll('.hcs-swatch, .hcs-size').forEach(function(button) {
-      button.addEventListener('click', function() {
-        const group = this.parentElement;
-        group.querySelectorAll('.active').forEach(function(el) {
-          el.classList.remove('active');
-        });
-        this.classList.add('active');
-        updateVariant();
-      });
+    const matchedVariant = variants.find(variant => {
+      let match = true;
+      if (selectedColor && !variant.options.includes(selectedColor)) match = false;
+      if (selectedSize && !variant.options.includes(selectedSize)) match = false;
+      return match;
     });
 
-    addToCart.addEventListener('click', function() {
-      const variantId = variantInput.value;
-      if (!variantId) return;
+    const atcButton = card.querySelector('.hcs-add-to-cart');
+    const inputHidden = card.querySelector('.hcs-variant-id');
+    const currentPriceEl = card.querySelector('.hcs-current-price');
+    const comparePriceEl = card.querySelector('.hcs-compare-price');
 
-      addToCart.disabled = true;
-      addToCart.textContent = 'Adding...';
+    if (matchedVariant) {
+      inputHidden.value = matchedVariant.id;
+      currentPriceEl.textContent = formatMoney(matchedVariant.price);
 
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          items: [
-            {
-              id: variantId,
-              quantity: 1
-            }
-          ]
+      if (matchedVariant.compare_at_price && matchedVariant.compare_at_price > matchedVariant.price) {
+        if (!comparePriceEl) {
+          const newComparePrice = document.createElement('span');
+          newComparePrice.className = 'hcs-compare-price';
+          card.querySelector('.hcs-price').insertBefore(newComparePrice, currentPriceEl);
+        }
+        card.querySelector('.hcs-compare-price').textContent = formatMoney(matchedVariant.compare_at_price);
+      } else if (comparePriceEl) {
+        comparePriceEl.remove();
+      }
+
+      if (matchedVariant.available) {
+        atcButton.disabled = false;
+        atcButton.textContent = 'Add to Cart';
+      } else {
+        atcButton.disabled = true;
+        atcButton.textContent = 'Sold Out';
+      }
+    } else {
+      atcButton.disabled = true;
+      atcButton.textContent = 'Unavailable';
+    }
+  }
+
+  document.querySelectorAll('.hcs-card-inner').forEach(card => {
+    card.addEventListener('click', function(e) {
+      const swatch = e.target.closest('.hcs-swatch');
+      const sizeBtn = e.target.closest('.hcs-size');
+      const atcButton = e.target.closest('.hcs-add-to-cart');
+
+      if (swatch) {
+        card.querySelectorAll('.hcs-swatch').forEach(btn => btn.classList.remove('active'));
+        swatch.classList.add('active');
+        
+        const newImg = swatch.getAttribute('data-image');
+        const imgEl = card.querySelector('.hcs-image');
+        if (newImg && imgEl) imgEl.src = newImg;
+        
+        updateCardVariant(card);
+      }
+
+      if (sizeBtn) {
+        card.querySelectorAll('.hcs-size').forEach(btn => btn.classList.remove('active'));
+        sizeBtn.classList.add('active');
+        
+        updateCardVariant(card);
+      }
+
+      if (atcButton) {
+        e.preventDefault();
+        const variantId = card.querySelector('.hcs-variant-id').value;
+        atcButton.disabled = true;
+        atcButton.textContent = 'Adding...';
+
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1 })
         })
-      })
-      .then(function(response) {
-        if (!response.ok) throw new Error('Add to cart failed');
-        return response.json();
-      })
-      .then(function() {
-        addToCart.textContent = 'Added!';
-
-        document.dispatchEvent(new CustomEvent('cart:refresh'));
-
-        setTimeout(function() {
-          updateVariant();
-        }, 1500);
-      })
-      .catch(function() {
-        addToCart.textContent = 'Error';
-        setTimeout(function() {
-          updateVariant();
-        }, 1500);
-      });
+        .then(response => response.json())
+        .then(data => {
+          atcButton.textContent = 'Added!';
+          setTimeout(() => { atcButton.textContent = 'Add to Cart'; atcButton.disabled = false; }, 2000);
+          if (document.querySelector('cart-notification') || document.querySelector('cart-drawer')) {
+            fetch(`${window.location.pathname}?sections=cart-icon-bubble`)
+              .then(res => res.json())
+              .then(html => {
+                const bubble = document.querySelector('#cart-icon-bubble');
+                if(bubble) bubble.innerHTML = html['cart-icon-bubble'];
+              });
+          }
+        })
+        .then(() => {
+           window.dispatchEvent(new Event('cart:updated'));
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          atcButton.textContent = 'Error';
+          setTimeout(() => { atcButton.textContent = 'Add to Cart'; atcButton.disabled = false; }, 2000);
+        });
+      }
     });
-
-    updateVariant();
   });
 });
 </script>
+
 
 {% schema %}
 {
