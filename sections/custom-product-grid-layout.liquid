@@ -118,73 +118,27 @@
                   {% endif %}
                 {% endfor %}
 
-                {%- comment -%}
-REPLACE ONLY THIS SIZE BUTTON CODE IN YOUR SECTION
+                {% if size_option_index != nil %}
+                  <div class="hcs-sizes" data-option-index="{{ size_option_index }}">
+                    {% assign shown_sizes = '' %}
 
-Find this block:
+                    {% for variant in product.variants %}
+                      {% assign size_value = variant.options[size_option_index] %}
+                      {% assign token = '|' | append: size_value | append: '|' %}
 
-{% if size_option_index != nil %}
-  <div class="hcs-sizes" data-option-index="{{ size_option_index }}">
-    {% assign shown_sizes = '' %}
-
-    {% for variant in product.variants %}
-      {% assign size_value = variant.options[size_option_index] %}
-      {% assign token = '|' | append: size_value | append: '|' %}
-
-      {% unless shown_sizes contains token %}
-        {% assign shown_sizes = shown_sizes | append: token %}
-        <button
-          type="button"
-          class="hcs-size{% if forloop.first %} active{% endif %}"
-          data-value="{{ size_value | escape }}"
-        >
-          {{ size_value }}
-        </button>
-      {% endunless %}
-    {% endfor %}
-  </div>
-{% endif %}
-
-AND REPLACE IT WITH THE CODE BELOW.
-{%- endcomment -%}
-
-{% if size_option_index != nil %}
-  <div class="hcs-sizes" data-option-index="{{ size_option_index }}">
-    {% assign shown_sizes = '' %}
-    {% assign first_size_set = false %}
-
-    {% for variant in product.variants %}
-      {% assign size_value = variant.options[size_option_index] %}
-      {% assign token = '|' | append: size_value | append: '|' %}
-
-      {% unless shown_sizes contains token %}
-        {% assign shown_sizes = shown_sizes | append: token %}
-
-        {%- comment -%}
-        Check if this size has ANY available variant
-        (any color + this size)
-        {%- endcomment -%}
-        {% assign size_available = false %}
-
-        {% for check_variant in product.variants %}
-          {% if check_variant.options[size_option_index] == size_value and check_variant.available %}
-            {% assign size_available = true %}
-            {% break %}
-          {% endif %}
-        {% endfor %}
-
-        <button
-          type="button"
-          class="hcs-size{% if first_size_set == false and size_available %} active{% assign first_size_set = true %}{% endif %}{% unless size_available %} disabled{% endunless %}"
-          data-value="{{ size_value | escape }}"
-          {% unless size_available %}aria-disabled="true"{% endunless %}
-        >
-          {{ size_value }}
-        </button>
-      {% endunless %}
-    {% endfor %}
-  </div>
-{% endif %}
+                      {% unless shown_sizes contains token %}
+                        {% assign shown_sizes = shown_sizes | append: token %}
+                        <button
+                          type="button"
+                          class="hcs-size{% if forloop.first %} active{% endif %}"
+                          data-value="{{ size_value | escape }}"
+                        >
+                          {{ size_value }}
+                        </button>
+                      {% endunless %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
 
                 <input
                   type="hidden"
