@@ -1,10 +1,5 @@
 
 
-{% for option in closest.product.options_with_values %}
-  {{ option.name }} - Swatches:
-  {{ option.values | map: 'swatch' | compact | size }}
-  <br>
-{% endfor %}
 {%- liquid
   assign block_settings = block.settings
   for product_option in closest.product.options_with_values
