@@ -358,132 +358,178 @@
 }
 </style>
 
+/* Replace your entire <script>...</script> block with this improved version */
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  /**
+   * Format money safely
+   */
+  function formatMoney(cents) {
+    if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
+      return Shopify.formatMoney(cents, "{{ shop.money_format }}");
+    }
+    return (cents / 100).toFixed(2);
+  }
+
+  /**
+   * Get selected option values from active buttons
+   */
+  function getSelectedOptions(card) {
+    const selected = {};
+
+    const activeSwatch = card.querySelector('.hcs-swatches .hcs-swatch.active');
+    if (activeSwatch) {
+      selected.color = activeSwatch.dataset.value;
+    }
+
+    const activeSize = card.querySelector('.hcs-sizes .hcs-size.active');
+    if (activeSize) {
+      selected.size = activeSize.dataset.value;
+    }
+
+    return selected;
+  }
+
+  /**
+   * Find matching variant based on exact option positions
+   */
+  function findMatchingVariant(card, variants) {
+    const swatchContainer = card.querySelector('.hcs-swatches');
+    const sizeContainer = card.querySelector('.hcs-sizes');
+
+    const selected = getSelectedOptions(card);
+
+    const colorOptionIndex = swatchContainer
+      ? parseInt(swatchContainer.dataset.optionIndex, 10)
+      : null;
+
+    const sizeOptionIndex = sizeContainer
+      ? parseInt(sizeContainer.dataset.optionIndex, 10)
+      : null;
+
+    // First try exact match
+    let matchedVariant = variants.find(function (variant) {
+      let matches = true;
+
+      if (
+        colorOptionIndex !== null &&
+        selected.color &&
+        variant.options[colorOptionIndex] !== selected.color
+      ) {
+        matches = false;
+      }
+
+      if (
+        sizeOptionIndex !== null &&
+        selected.size &&
+        variant.options[sizeOptionIndex] !== selected.size
+      ) {
+        matches = false;
+      }
+
+      return matches;
+    });
+
+    // Fallback to first available variant
+    if (!matchedVariant) {
+      matchedVariant =
+        variants.find(function (variant) {
+          return variant.available;
+        }) || variants[0];
+    }
+
+    return matchedVariant;
+  }
+
+  /**
+   * Update card UI according to selected variant
+   */
   function updateCardVariant(card) {
     const variantsJson = card.querySelector('.hcs-variants-json');
     if (!variantsJson) return;
 
-    const variants = JSON.parse(variantsJson.textContent);
-
-    const swatchContainer = card.querySelector('.hcs-swatches');
-    const sizeContainer = card.querySelector('.hcs-sizes');
-
-    let selectedColor = null;
-    let selectedSize = null;
-
-    // Get selected color
-    if (swatchContainer) {
-      const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
-      if (activeSwatch) {
-        selectedColor = activeSwatch.dataset.value;
-      }
-    }
-
-    // Get selected size
-    if (sizeContainer) {
-      const activeSize = sizeContainer.querySelector('.hcs-size.active');
-      if (activeSize) {
-        selectedSize = activeSize.dataset.value;
-      }
-    }
-
-    // Find matching variant
-    const matchedVariant = variants.find((variant) => {
-      let colorMatch = true;
-      let sizeMatch = true;
-
-      if (selectedColor) {
-        colorMatch = variant.options.some(
-          (option) =>
-            option &&
-            option.toString().toLowerCase() === selectedColor.toLowerCase()
-        );
-      }
-
-      if (selectedSize) {
-        sizeMatch = variant.options.some(
-          (option) =>
-            option &&
-            option.toString().toLowerCase() === selectedSize.toLowerCase()
-        );
-      }
-
-      return colorMatch && sizeMatch;
-    });
-
-    const submitButton = card.querySelector('.hcs-submit-button');
-    const inputHidden = card.querySelector('.hcs-variant-id');
-    const imgEl = card.querySelector('.hcs-image');
-    const currentPriceEl = card.querySelector('.hcs-current-price');
-    const priceWrapper = card.querySelector('.hcs-price');
-    let comparePriceEl = card.querySelector('.hcs-compare-price');
-
-    if (!matchedVariant) {
-      if (submitButton) {
-        submitButton.classList.add('disabled');
-        submitButton.setAttribute('aria-disabled', 'true');
-        submitButton.textContent = 'Unavailable';
-      }
+    let variants = [];
+    try {
+      variants = JSON.parse(variantsJson.textContent);
+    } catch (e) {
+      console.error('Invalid variant JSON', e);
       return;
     }
 
-    // Update hidden variant ID
-    if (inputHidden) {
-      inputHidden.value = matchedVariant.id;
+    if (!variants.length) return;
+
+    const matchedVariant = findMatchingVariant(card, variants);
+    if (!matchedVariant) return;
+
+    const productUrl = card.dataset.productUrl;
+
+    const submitButton = card.querySelector('.hcs-submit-button');
+    const hiddenInput = card.querySelector('.hcs-variant-id');
+    const image = card.querySelector('.hcs-image');
+    const currentPrice = card.querySelector('.hcs-current-price');
+    const priceWrapper = card.querySelector('.hcs-price');
+    let comparePrice = card.querySelector('.hcs-compare-price');
+
+    /* Update hidden variant input */
+    if (hiddenInput) {
+      hiddenInput.value = matchedVariant.id;
     }
 
-    // Update all product links
-    const productUrl = card.dataset.productUrl;
-    const variantUrl = `${productUrl}?variant=${matchedVariant.id}`;
+    /* Update all links with selected variant */
+    if (productUrl) {
+      const variantUrl = productUrl + '?variant=' + matchedVariant.id;
 
-    card.querySelectorAll('.hcs-image-link, .hcs-title a, .hcs-submit-button')
-      .forEach((link) => {
-        link.href = variantUrl;
-      });
+      card.querySelectorAll('.hcs-image-link, .hcs-title a, .hcs-submit-button')
+        .forEach(function (link) {
+          if (link.tagName.toLowerCase() === 'a') {
+            link.href = variantUrl;
+          }
+        });
+    }
 
-    // Update image
-    if (imgEl && matchedVariant.featured_image) {
+    /* Update image */
+    if (
+      image &&
+      matchedVariant.featured_image &&
+      (matchedVariant.featured_image.src || matchedVariant.featured_image.url)
+    ) {
       const imageUrl =
         matchedVariant.featured_image.src ||
         matchedVariant.featured_image.url;
 
-      if (imageUrl) {
-        imgEl.src = imageUrl;
-        imgEl.removeAttribute('srcset');
+      if (image.src !== imageUrl) {
+        image.src = imageUrl;
+        image.removeAttribute('srcset');
       }
     }
 
-    // Update price
-    if (currentPriceEl) {
-      currentPriceEl.textContent = Shopify.formatMoney(
-        matchedVariant.price,
-        "{{ shop.money_format }}"
-      );
+    /* Update current price */
+    if (currentPrice) {
+      currentPrice.textContent = formatMoney(matchedVariant.price);
     }
 
-    // Update compare-at price
+    /* Update compare-at price */
     if (
       matchedVariant.compare_at_price &&
       matchedVariant.compare_at_price > matchedVariant.price
     ) {
-      if (!comparePriceEl && priceWrapper) {
-        comparePriceEl = document.createElement('span');
-        comparePriceEl.className = 'hcs-compare-price';
-        priceWrapper.insertBefore(comparePriceEl, currentPriceEl);
+      if (!comparePrice && priceWrapper) {
+        comparePrice = document.createElement('span');
+        comparePrice.className = 'hcs-compare-price';
+        priceWrapper.insertBefore(comparePrice, currentPrice);
       }
 
-      if (comparePriceEl) {
-        comparePriceEl.textContent = Shopify.formatMoney(
-          matchedVariant.compare_at_price,
-          "{{ shop.money_format }}"
+      if (comparePrice) {
+        comparePrice.textContent = formatMoney(
+          matchedVariant.compare_at_price
         );
       }
-    } else if (comparePriceEl) {
-      comparePriceEl.remove();
+    } else if (comparePrice) {
+      comparePrice.remove();
     }
 
-    // Update submit button state
+    /* Update button state */
     if (submitButton) {
       if (matchedVariant.available) {
         submitButton.classList.remove('disabled');
@@ -497,51 +543,61 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Global click handling
-  document.addEventListener('click', function (e) {
-    // Color swatch click
-    const swatch = e.target.closest('.hcs-swatch');
+  /**
+   * Activate one button in a group
+   */
+  function setActiveButton(button, selector) {
+    const container = button.parentElement;
+    if (!container) return;
+
+    container.querySelectorAll(selector).forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+
+    button.classList.add('active');
+  }
+
+  /**
+   * Event delegation
+   */
+  document.addEventListener('click', function (event) {
+    /* Color swatch click */
+    const swatch = event.target.closest('.hcs-swatch');
     if (swatch) {
-      e.preventDefault();
+      event.preventDefault();
 
       const card = swatch.closest('.hcs-card-inner');
       if (!card) return;
 
-      card.querySelectorAll('.hcs-swatch').forEach((btn) => {
-        btn.classList.remove('active');
-      });
-
-      swatch.classList.add('active');
+      setActiveButton(swatch, '.hcs-swatch');
       updateCardVariant(card);
       return;
     }
 
-    // Size click
-    const sizeBtn = e.target.closest('.hcs-size');
-    if (sizeBtn) {
-      e.preventDefault();
+    /* Size click */
+    const sizeButton = event.target.closest('.hcs-size');
+    if (sizeButton) {
+      event.preventDefault();
 
-      const card = sizeBtn.closest('.hcs-card-inner');
+      const card = sizeButton.closest('.hcs-card-inner');
       if (!card) return;
 
-      card.querySelectorAll('.hcs-size').forEach((btn) => {
-        btn.classList.remove('active');
-      });
-
-      sizeBtn.classList.add('active');
+      setActiveButton(sizeButton, '.hcs-size');
       updateCardVariant(card);
       return;
     }
 
-    // Disabled submit button click
-    const submitButton = e.target.closest('.hcs-submit-button.disabled');
-    if (submitButton) {
-      e.preventDefault();
+    /* Prevent disabled button clicks */
+    const disabledButton = event.target.closest('.hcs-submit-button.disabled');
+    if (disabledButton) {
+      event.preventDefault();
     }
   });
 
-  // Initialize all cards
-  document.querySelectorAll('.hcs-card-inner').forEach((card) => {
+  /**
+   * Initialize all product cards
+   */
+  document.querySelectorAll('.hcs-card-inner').forEach(function (card) {
     updateCardVariant(card);
   });
 });
