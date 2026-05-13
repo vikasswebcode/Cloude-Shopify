@@ -360,132 +360,125 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const currencySymbol = "{{ 0 | money | replace: '0.00', '' | replace: '0,00', '' | strip }}";
+function updateCardVariant(card) {
+  const variants = JSON.parse(
+    card.querySelector('.hcs-variants-json').textContent
+  );
 
-  function formatMoney(cents) {
-    let dollars = (cents / 100).toFixed(2);
-    return `${currencySymbol}${dollars}`;
+  const swatchContainer = card.querySelector('.hcs-swatches');
+  const sizeContainer = card.querySelector('.hcs-sizes');
+
+  let selectedColor = null;
+  let selectedSize = null;
+
+  // Get selected color
+  if (swatchContainer) {
+    const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
+    if (activeSwatch) {
+      selectedColor = activeSwatch.getAttribute('data-value');
+    }
   }
 
-  function updateCardVariant(card) {
-    const variants = JSON.parse(card.querySelector('.hcs-variants-json').textContent);
-    const swatchContainer = card.querySelector('.hcs-swatches');
-    const sizeContainer = card.querySelector('.hcs-sizes');
-    
-    let selectedColor = null;
-    let selectedSize = null;
+  // Get selected size
+  if (sizeContainer) {
+    const activeSize = sizeContainer.querySelector('.hcs-size.active');
+    if (activeSize) {
+      selectedSize = activeSize.getAttribute('data-value');
+    }
+  }
 
-    if (swatchContainer) {
-      const activeSwatch = swatchContainer.querySelector('.hcs-swatch.active');
-      if (activeSwatch) selectedColor = activeSwatch.getAttribute('data-value');
+  // Find exact matching variant
+  const matchedVariant = variants.find((variant) => {
+    let colorMatch = true;
+    let sizeMatch = true;
+
+    // Match color
+    if (selectedColor) {
+      colorMatch = variant.options.some(
+        (option) =>
+          option &&
+          option.toString().toLowerCase() === selectedColor.toLowerCase()
+      );
     }
 
-    if (sizeContainer) {
-      const activeSize = sizeContainer.querySelector('.hcs-size.active');
-      if (activeSize) selectedSize = activeSize.getAttribute('data-value');
+    // Match size
+    if (selectedSize) {
+      sizeMatch = variant.options.some(
+        (option) =>
+          option &&
+          option.toString().toLowerCase() === selectedSize.toLowerCase()
+      );
     }
 
-    const matchedVariant = variants.find(variant => {
-      let match = true;
-      if (selectedColor && !variant.options.includes(selectedColor)) match = false;
-      if (selectedSize && !variant.options.includes(selectedSize)) match = false;
-      return match;
+    return colorMatch && sizeMatch;
+  });
+
+  const atcButton = card.querySelector('.hcs-add-to-cart');
+  const inputHidden = card.querySelector('.hcs-variant-id');
+  const currentPriceEl = card.querySelector('.hcs-current-price');
+  const priceWrapper = card.querySelector('.hcs-price');
+  let comparePriceEl = card.querySelector('.hcs-compare-price');
+  const imgEl = card.querySelector('.hcs-image');
+
+  if (matchedVariant) {
+    // Update variant ID
+    inputHidden.value = matchedVariant.id;
+
+    // Update URL to selected variant
+    const productUrl = card.getAttribute('data-product-url');
+    const productLinks = card.querySelectorAll(
+      '.hcs-image-link, .hcs-title a'
+    );
+
+    productLinks.forEach((link) => {
+      link.href = `${productUrl}?variant=${matchedVariant.id}`;
     });
 
-    const atcButton = card.querySelector('.hcs-add-to-cart');
-    const inputHidden = card.querySelector('.hcs-variant-id');
-    const currentPriceEl = card.querySelector('.hcs-current-price');
-    const comparePriceEl = card.querySelector('.hcs-compare-price');
+    // Update image from selected variant
+    if (
+      matchedVariant.featured_image &&
+      matchedVariant.featured_image.src &&
+      imgEl
+    ) {
+      imgEl.src = matchedVariant.featured_image.src;
+      imgEl.srcset = '';
+    }
 
-    if (matchedVariant) {
-      inputHidden.value = matchedVariant.id;
-      currentPriceEl.textContent = formatMoney(matchedVariant.price);
+    // Update current price
+    currentPriceEl.textContent = formatMoney(matchedVariant.price);
 
-      if (matchedVariant.compare_at_price && matchedVariant.compare_at_price > matchedVariant.price) {
-        if (!comparePriceEl) {
-          const newComparePrice = document.createElement('span');
-          newComparePrice.className = 'hcs-compare-price';
-          card.querySelector('.hcs-price').insertBefore(newComparePrice, currentPriceEl);
-        }
-        card.querySelector('.hcs-compare-price').textContent = formatMoney(matchedVariant.compare_at_price);
-      } else if (comparePriceEl) {
-        comparePriceEl.remove();
+    // Update compare price
+    if (
+      matchedVariant.compare_at_price &&
+      matchedVariant.compare_at_price > matchedVariant.price
+    ) {
+      if (!comparePriceEl) {
+        comparePriceEl = document.createElement('span');
+        comparePriceEl.className = 'hcs-compare-price';
+        priceWrapper.insertBefore(comparePriceEl, currentPriceEl);
       }
 
-      if (matchedVariant.available) {
-        atcButton.disabled = false;
-        atcButton.textContent = 'Add to Cart';
-      } else {
-        atcButton.disabled = true;
-        atcButton.textContent = 'Sold Out';
-      }
+      comparePriceEl.textContent = formatMoney(
+        matchedVariant.compare_at_price
+      );
+    } else if (comparePriceEl) {
+      comparePriceEl.remove();
+    }
+
+    // Update button state
+    if (matchedVariant.available) {
+      atcButton.disabled = false;
+      atcButton.textContent = 'Add to Cart';
     } else {
       atcButton.disabled = true;
-      atcButton.textContent = 'Unavailable';
+      atcButton.textContent = 'Sold Out';
     }
+  } else {
+    // No matching variant
+    atcButton.disabled = true;
+    atcButton.textContent = 'Unavailable';
   }
-
-  document.querySelectorAll('.hcs-card-inner').forEach(card => {
-    card.addEventListener('click', function(e) {
-      const swatch = e.target.closest('.hcs-swatch');
-      const sizeBtn = e.target.closest('.hcs-size');
-      const atcButton = e.target.closest('.hcs-add-to-cart');
-
-      if (swatch) {
-        card.querySelectorAll('.hcs-swatch').forEach(btn => btn.classList.remove('active'));
-        swatch.classList.add('active');
-        
-        const newImg = swatch.getAttribute('data-image');
-        const imgEl = card.querySelector('.hcs-image');
-        if (newImg && imgEl) imgEl.src = newImg;
-        
-        updateCardVariant(card);
-      }
-
-      if (sizeBtn) {
-        card.querySelectorAll('.hcs-size').forEach(btn => btn.classList.remove('active'));
-        sizeBtn.classList.add('active');
-        
-        updateCardVariant(card);
-      }
-
-      if (atcButton) {
-        e.preventDefault();
-        const variantId = card.querySelector('.hcs-variant-id').value;
-        atcButton.disabled = true;
-        atcButton.textContent = 'Adding...';
-
-        fetch(window.Shopify.routes.root + 'cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: variantId, quantity: 1 })
-        })
-        .then(response => response.json())
-        .then(data => {
-          atcButton.textContent = 'Added!';
-          setTimeout(() => { atcButton.textContent = 'Add to Cart'; atcButton.disabled = false; }, 2000);
-          if (document.querySelector('cart-notification') || document.querySelector('cart-drawer')) {
-            fetch(`${window.location.pathname}?sections=cart-icon-bubble`)
-              .then(res => res.json())
-              .then(html => {
-                const bubble = document.querySelector('#cart-icon-bubble');
-                if(bubble) bubble.innerHTML = html['cart-icon-bubble'];
-              });
-          }
-        })
-        .then(() => {
-           window.dispatchEvent(new Event('cart:updated'));
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          atcButton.textContent = 'Error';
-          setTimeout(() => { atcButton.textContent = 'Add to Cart'; atcButton.disabled = false; }, 2000);
-        });
-      }
-    });
-  });
-});
+}
 </script>
 
 
