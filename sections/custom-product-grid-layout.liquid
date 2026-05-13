@@ -6,8 +6,10 @@
   - Product image
   - Title
   - Compare price + sale price
-  - Color swatches from variant option named "Color"
-  - Size labels from variant option named "Size"
+  - Clickable Color swatches
+  - Clickable Size options
+  - Variant image updates
+  - AJAX Add to Cart button
 {% endcomment %}
 
 <section class="horizontal-collection-showcase section-{{ section.id }}">
@@ -22,69 +24,92 @@
 
         {% if collection != blank and collection.products.size > 0 %}
           {% assign product = collection.products.first %}
+          {% assign current_variant = product.selected_or_first_available_variant %}
 
           <div class="hcs-card" {{ block.shopify_attributes }}>
-            <a href="{{ product.url }}" class="hcs-card-link">
+            <div
+              class="hcs-card-inner"
+              data-product-id="{{ product.id }}"
+              data-product-url="{{ product.url }}"
+            >
+
+              <script type="application/json" class="hcs-variants-json">
+                {{ product.variants | json }}
+              </script>
 
               {%- if product.compare_at_price > product.price -%}
                 <span class="hcs-sale-badge">Sale</span>
               {%- endif -%}
 
-              <div class="hcs-image-wrapper">
-                {% if product.featured_image %}
-                  <img
-                    src="{{ product.featured_image | image_url: width: 800 }}"
-                    alt="{{ product.title | escape }}"
-                    width="{{ product.featured_image.width }}"
-                    height="{{ product.featured_image.height }}"
-                    loading="lazy"
-                    class="hcs-image"
-                  >
-                {% endif %}
-              </div>
+              <a href="{{ product.url }}" class="hcs-image-link">
+                <div class="hcs-image-wrapper">
+                  {% if current_variant.featured_image %}
+                    {% assign display_image = current_variant.featured_image %}
+                  {% else %}
+                    {% assign display_image = product.featured_image %}
+                  {% endif %}
+
+                  {% if display_image %}
+                    <img
+                      src="{{ display_image | image_url: width: 800 }}"
+                      alt="{{ product.title | escape }}"
+                      width="{{ display_image.width }}"
+                      height="{{ display_image.height }}"
+                      loading="lazy"
+                      class="hcs-image"
+                    >
+                  {% endif %}
+                </div>
+              </a>
 
               <div class="hcs-content">
-                <h3 class="hcs-title">{{ product.title }}</h3>
+                <h3 class="hcs-title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
 
                 <div class="hcs-price">
-                  {% if product.compare_at_price > product.price %}
+                  {% if current_variant.compare_at_price > current_variant.price %}
                     <span class="hcs-compare-price">
-                      {{ product.compare_at_price | money }}
+                      {{ current_variant.compare_at_price | money }}
                     </span>
                   {% endif %}
                   <span class="hcs-current-price">
-                    {{ product.price | money }}
+                    {{ current_variant.price | money }}
                   </span>
                 </div>
 
-                {%- comment -%}
-                  Color Swatches
-                {%- endcomment -%}
                 {% assign color_option_index = nil %}
                 {% for option in product.options_with_values %}
-                  {% if option.name == 'Color' or option.name == 'Colour' %}
+                  {% assign option_name = option.name | downcase %}
+                  {% if option_name == 'color' or option_name == 'colour' %}
                     {% assign color_option_index = forloop.index0 %}
                     {% break %}
                   {% endif %}
                 {% endfor %}
 
                 {% if color_option_index != nil %}
-                  <div class="hcs-swatches">
+                  <div class="hcs-swatches" data-option-index="{{ color_option_index }}">
                     {% assign shown_colors = '' %}
+                    {% assign visible_count = 0 %}
                     {% assign extra_count = 0 %}
 
                     {% for variant in product.variants %}
                       {% assign color_value = variant.options[color_option_index] %}
+                      {% assign token = '|' | append: color_value | append: '|' %}
 
-                      {% unless shown_colors contains color_value %}
-                        {% assign shown_colors = shown_colors | append: color_value | append: ',' %}
+                      {% unless shown_colors contains token %}
+                        {% assign shown_colors = shown_colors | append: token %}
 
-                        {% if forloop.index <= 3 %}
-                          <span
-                            class="hcs-swatch"
+                        {% if visible_count < 3 %}
+                          <button
+                            type="button"
+                            class="hcs-swatch{% if visible_count == 0 %} active{% endif %}"
+                            data-value="{{ color_value | escape }}"
+                            data-image="{% if variant.featured_image %}{{ variant.featured_image | image_url: width: 800 }}{% endif %}"
                             title="{{ color_value }}"
                             style="background-color: {{ color_value | downcase }};"
-                          ></span>
+                          ></button>
+                          {% assign visible_count = visible_count | plus: 1 %}
                         {% else %}
                           {% assign extra_count = extra_count | plus: 1 %}
                         {% endif %}
@@ -97,33 +122,56 @@
                   </div>
                 {% endif %}
 
-                {%- comment -%}
-                  Size Variants
-                {%- endcomment -%}
                 {% assign size_option_index = nil %}
                 {% for option in product.options_with_values %}
-                  {% if option.name == 'Size' %}
+                  {% assign option_name = option.name | downcase %}
+                  {% if option_name == 'size' %}
                     {% assign size_option_index = forloop.index0 %}
                     {% break %}
                   {% endif %}
                 {% endfor %}
 
                 {% if size_option_index != nil %}
-                  <div class="hcs-sizes">
+                  <div class="hcs-sizes" data-option-index="{{ size_option_index }}">
                     {% assign shown_sizes = '' %}
 
                     {% for variant in product.variants %}
                       {% assign size_value = variant.options[size_option_index] %}
+                      {% assign token = '|' | append: size_value | append: '|' %}
 
-                      {% unless shown_sizes contains size_value %}
-                        {% assign shown_sizes = shown_sizes | append: size_value | append: ',' %}
-                        <span class="hcs-size">{{ size_value }}</span>
+                      {% unless shown_sizes contains token %}
+                        {% assign shown_sizes = shown_sizes | append: token %}
+                        <button
+                          type="button"
+                          class="hcs-size{% if forloop.first %} active{% endif %}"
+                          data-value="{{ size_value | escape }}"
+                        >
+                          {{ size_value }}
+                        </button>
                       {% endunless %}
                     {% endfor %}
                   </div>
                 {% endif %}
+
+                <input
+                  type="hidden"
+                  class="hcs-variant-id"
+                  value="{{ current_variant.id }}"
+                >
+
+                <button
+                  type="button"
+                  class="hcs-add-to-cart"
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  {% if current_variant.available %}
+                    Add to Cart
+                  {% else %}
+                    Sold Out
+                  {% endif %}
+                </button>
               </div>
-            </a>
+            </div>
           </div>
         {% endif %}
       {% endfor %}
@@ -162,12 +210,6 @@
   transform: translateY(-5px);
 }
 
-.hcs-card-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
 .hcs-sale-badge {
   position: absolute;
   top: 14px;
@@ -181,6 +223,12 @@
   z-index: 2;
 }
 
+.hcs-image-link,
+.hcs-title a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .hcs-image-wrapper {
   background: #ececec;
   aspect-ratio: 4 / 5;
@@ -188,10 +236,7 @@
 }
 
 .hcs-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
 
 .hcs-content {
@@ -227,13 +272,21 @@
   font-weight: 700;
 }
 
-.hcs-swatches {
+.hcs-swatches,
+.hcs-sizes {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
   flex-wrap: wrap;
+}
+
+.hcs-swatches {
+  margin-bottom: 12px;
+}
+
+.hcs-sizes {
+  margin-bottom: 16px;
 }
 
 .hcs-swatch {
@@ -241,20 +294,13 @@
   height: 22px;
   border-radius: 50%;
   border: 1px solid #999;
-  display: inline-block;
+  cursor: pointer;
+  padding: 0;
 }
 
-.hcs-extra {
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-}
-
-.hcs-sizes {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
+.hcs-swatch.active {
+  border: 2px solid #111;
+  transform: scale(1.1);
 }
 
 .hcs-size {
@@ -264,6 +310,40 @@
   padding: 4px 8px;
   border-radius: 4px;
   background: #fff;
+  cursor: pointer;
+}
+
+.hcs-size.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.hcs-extra {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.hcs-add-to-cart {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.hcs-add-to-cart:hover {
+  background: #333;
+}
+
+.hcs-add-to-cart:disabled {
+  background: #999;
+  cursor: not-allowed;
 }
 
 @media screen and (max-width: 991px) {
@@ -291,6 +371,138 @@
   }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.section-{{ section.id }} .hcs-card-inner').forEach(function(card) {
+    const variants = JSON.parse(card.querySelector('.hcs-variants-json').textContent);
+    const image = card.querySelector('.hcs-image');
+    const variantInput = card.querySelector('.hcs-variant-id');
+    const price = card.querySelector('.hcs-current-price');
+    const comparePrice = card.querySelector('.hcs-compare-price');
+    const addToCart = card.querySelector('.hcs-add-to-cart');
+
+    function getSelectedValues() {
+      const selected = {};
+
+      const activeSwatch = card.querySelector('.hcs-swatches .hcs-swatch.active');
+      if (activeSwatch) {
+        const index = parseInt(activeSwatch.closest('.hcs-swatches').dataset.optionIndex, 10);
+        selected[index] = activeSwatch.dataset.value;
+      }
+
+      const activeSize = card.querySelector('.hcs-sizes .hcs-size.active');
+      if (activeSize) {
+        const index = parseInt(activeSize.closest('.hcs-sizes').dataset.optionIndex, 10);
+        selected[index] = activeSize.dataset.value;
+      }
+
+      return selected;
+    }
+
+    function findVariant() {
+      const selected = getSelectedValues();
+
+      return variants.find(function(variant) {
+        for (const index in selected) {
+          if (variant.options[index] !== selected[index]) {
+            return false;
+          }
+        }
+        return true;
+      }) || variants[0];
+    }
+
+    function updateVariant() {
+      const variant = findVariant();
+      if (!variant) return;
+
+      variantInput.value = variant.id;
+
+      if (variant.featured_image && image) {
+        image.src = variant.featured_image.src;
+      }
+
+      if (price) {
+        price.textContent = Shopify.formatMoney(
+          variant.price,
+          window.theme?.moneyFormat || '{{ shop.money_format | escape }}'
+        );
+      }
+
+      if (comparePrice) {
+        if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+          comparePrice.textContent = Shopify.formatMoney(
+            variant.compare_at_price,
+            window.theme?.moneyFormat || '{{ shop.money_format | escape }}'
+          );
+          comparePrice.style.display = '';
+        } else {
+          comparePrice.style.display = 'none';
+        }
+      }
+
+      addToCart.disabled = !variant.available;
+      addToCart.textContent = variant.available ? 'Add to Cart' : 'Sold Out';
+    }
+
+    card.querySelectorAll('.hcs-swatch, .hcs-size').forEach(function(button) {
+      button.addEventListener('click', function() {
+        const group = this.parentElement;
+        group.querySelectorAll('.active').forEach(function(el) {
+          el.classList.remove('active');
+        });
+        this.classList.add('active');
+        updateVariant();
+      });
+    });
+
+    addToCart.addEventListener('click', function() {
+      const variantId = variantInput.value;
+      if (!variantId) return;
+
+      addToCart.disabled = true;
+      addToCart.textContent = 'Adding...';
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              id: variantId,
+              quantity: 1
+            }
+          ]
+        })
+      })
+      .then(function(response) {
+        if (!response.ok) throw new Error('Add to cart failed');
+        return response.json();
+      })
+      .then(function() {
+        addToCart.textContent = 'Added!';
+
+        document.dispatchEvent(new CustomEvent('cart:refresh'));
+
+        setTimeout(function() {
+          updateVariant();
+        }, 1500);
+      })
+      .catch(function() {
+        addToCart.textContent = 'Error';
+        setTimeout(function() {
+          updateVariant();
+        }, 1500);
+      });
+    });
+
+    updateVariant();
+  });
+});
+</script>
 
 {% schema %}
 {
@@ -364,3 +576,5 @@
   ]
 }
 {% endschema %}
+
+
